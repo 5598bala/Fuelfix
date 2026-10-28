@@ -59,27 +59,46 @@
 
     function onLocationError(error) {
         let detail = "Allow location access in your browser settings, then retry.";
-        if (error && error.code === error.TIMEOUT) {
+        if (error && error.code === 3) {
             detail = "GPS is taking too long. Keep this page open and retry.";
+        } else if (error && error.code === 2) {
+            detail = "Your phone could not get a GPS fix. Turn on Location Services and retry outdoors.";
         }
         message.textContent = "Location sharing is paused. " + detail;
+        if (watchId !== null && navigator.geolocation) {
+            navigator.geolocation.clearWatch(watchId);
+        }
+        watchId = null;
+        sharingStarted = false;
+        retryButton.textContent = "Retry location sharing";
         retryButton.hidden = false;
     }
 
     function startGps() {
         if (sharingStarted) return;
+        if (!hasActiveDelivery && !isOnline) {
+            message.textContent = "Accept a job or go online before sharing location.";
+            retryButton.hidden = true;
+            return;
+        }
         if (!navigator.geolocation) {
             message.textContent = "This browser does not support GPS location sharing.";
             retryButton.hidden = false;
             return;
         }
+        const isLocalHost = ["localhost", "127.0.0.1", "::1"].includes(window.location.hostname);
+        if (!window.isSecureContext && !isLocalHost) {
+            message.textContent = "Mobile browsers require HTTPS for GPS. Open FuelFix using its https:// address.";
+            retryButton.hidden = false;
+            return;
+        }
         sharingStarted = true;
         retryButton.hidden = true;
-        message.textContent = "Waiting for your device GPS location...";
+        message.textContent = "Waiting for GPS. Keep this page open while delivering; mobile browsers may pause location in the background.";
         watchId = navigator.geolocation.watchPosition(
             sendPosition,
             onLocationError,
-            {enableHighAccuracy: true, maximumAge: 3000, timeout: 15000}
+            {enableHighAccuracy: true, maximumAge: 2000, timeout: 20000}
         );
     }
 
@@ -100,6 +119,10 @@
                 if (nextOnline) {
                     if (!navigator.geolocation) {
                         throw new Error("GPS is not supported in this browser.");
+                    }
+                    const isLocalHost = ["localhost", "127.0.0.1", "::1"].includes(window.location.hostname);
+                    if (!window.isSecureContext && !isLocalHost) {
+                        throw new Error("Mobile browsers require HTTPS to share GPS location.");
                     }
                     await new Promise((resolve, reject) => {
                         navigator.geolocation.getCurrentPosition(resolve, reject, {
@@ -134,8 +157,11 @@
         startGps();
     });
 
-    if (hasActiveDelivery || isOnline) startGps();
-    else if (!message.textContent.trim()) {
+    if (hasActiveDelivery || isOnline) {
+        retryButton.hidden = false;
+        retryButton.textContent = "Start live location";
+        message.textContent = "Tap Start live location and allow GPS access. Keep this page open while delivering.";
+    } else if (!message.textContent.trim()) {
         message.textContent = "Accept a job to start live delivery tracking.";
     }
 

@@ -82,17 +82,39 @@ For uploaded media, add:
 
 Then reload the web app.
 
-## 5. Update third-party callback URLs and test
+## 5. Configure Google sign-in for the deployed host
 
-After the site is live, update the Google OAuth callback URL to (replace YOUR_SITE_HOSTNAME with the exact domain shown in the Web tab; account region can change the domain):
+Google OAuth details are stored in Django's database, not in this Git repository. The local `db.sqlite3` is ignored by Git, so the local Google SocialApp is not copied to PythonAnywhere.
 
-https://YOUR_SITE_HOSTNAME/accounts/google/login/callback/
+In the PythonAnywhere Django admin:
+
+1. Open **Sites** and set site ID `1` to the exact hostname shown in the Web tab, such as `2244fuelfix.pythonanywhere.com` (without `https://`).
+2. Open **Social applications**, add a **Google** application with your Google OAuth web client ID and secret, and assign it to that Site.
+3. In Google Cloud Console, add the production site as an authorized JavaScript origin:
+
+   `https://YOUR_SITE_HOSTNAME`
+
+4. Add this authorized redirect URI:
+
+   `https://YOUR_SITE_HOSTNAME/accounts/google/login/callback/`
+
+Use the OAuth **Web application** client. Do not put the client secret in templates or JavaScript. The customer button returns to `/dashboard/`; the provider button returns to `/provider/validate/`.
+
+## 6. Mobile OTP and GPS setup
+
+- Make sure the PythonAnywhere project-root `.env` has a non-empty `MERAOTP_API_KEY` and that the MeraOTP account is active with OTP credit. The project calls the provider from Django; the key must never be added to mobile JavaScript.
+- Set `GEOAPIFY_API_KEY` in that same `.env` for map tiles and reverse geocoding. The map key is sent to the browser, so restrict it to the FuelFix domain in Geoapify.
+- Reload the PythonAnywhere web app after changing `.env` or OAuth Site settings.
+- On a phone, open FuelFix over HTTPS in Safari or Chrome and allow Location access when prompted. A provider must tap **Start live location** after accepting a job and keep the page open in the foreground while travelling. Mobile browsers may pause GPS and timer updates when the page is backgrounded or the screen is locked; a web page cannot guarantee background tracking like a native app.
+- Customers can keep the tracking page open to receive location/status updates. If Geoapify is not configured or tiles are unavailable, the page still updates status and coordinates and offers a Google Maps link.
+
+## 7. Razorpay webhooks and final checks
 
 If you use Razorpay webhooks, set the webhook URL to:
 
 https://YOUR_SITE_HOSTNAME/payments/razorpay/webhook/
 
-Test login, OTP delivery, a fuel request, provider tracking, email reset, and Razorpay test-mode checkout. Check the Web tab error log if the site does not load.
+After setting production credentials, verify Google sign-in on mobile, request a real OTP only with a consenting test phone, allow provider GPS, and check the customer tracking page. Also test a fuel request, email reset, and Razorpay test-mode checkout. Check the Web tab error log if a server request fails.
 
 ## PythonAnywhere free-account network limit
 

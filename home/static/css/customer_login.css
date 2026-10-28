@@ -685,6 +685,14 @@
     text-align: center;
 }
 
+.mobile-browser-note {
+    margin: 10px 0 0;
+    color: #718198;
+    font-size: 11px;
+    line-height: 1.55;
+    text-align: center;
+}
+
 /* Bottom brand note */
 .bottom-note {
     display: flex;

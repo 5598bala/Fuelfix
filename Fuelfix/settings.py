@@ -70,6 +70,10 @@ INSTALLED_APPS = [
 
 ]
 
+# Use the configured Django Site for django-allauth's provider selection.
+# SocialApp credentials must be assigned to this Site in the admin.
+SITE_ID = int(os.environ.get("SITE_ID", "1"))
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -182,8 +186,6 @@ MEDIA_ROOT = BASE_DIR / "media"
 LOGIN_REDIRECT_URL = "/dashboard/"
 LOGOUT_REDIRECT_URL = "/"
 
-LOGIN_REDIRECT_URL = "/provider/validate/"
-
 ACCOUNT_LOGOUT_REDIRECT_URL = "/"
 
 # Public browser key for Geoapify map tiles; restrict it in your Geoapify account.
@@ -191,6 +193,23 @@ GEOAPIFY_API_KEY = os.environ.get("GEOAPIFY_API_KEY", "")
 
 # Server-side MeraOTP credential. Keep it in the ignored project .env file.
 MERAOTP_API_KEY = os.environ.get("MERAOTP_API_KEY", "")
+
+# Request the profile and email needed to create a customer account from Google.
+# OAuth credentials remain in the Google SocialApp configured in Django admin.
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "SCOPE": ["profile", "email"],
+    },
+}
+SOCIALACCOUNT_QUERY_EMAIL = True
+
+# OAuth returns to FuelFix as a top-level HTTPS navigation. Lax cookies allow
+# that flow while keeping the login session scoped to the FuelFix site.
+SESSION_COOKIE_SAMESITE = "Lax"
+CSRF_COOKIE_SAMESITE = "Lax"
+if not DEBUG:
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
 
 # Razorpay server credentials. Set these in the ignored project-root .env file.
 RAZORPAY_KEY_ID = os.environ.get("RAZORPAY_KEY_ID", "")

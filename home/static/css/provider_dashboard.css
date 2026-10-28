@@ -1781,6 +1781,7 @@ body {
 }
 .provider-location-panel button:hover { transform: translateY(-1px); box-shadow: 0 7px 17px rgba(20, 45, 80, .11); }
 .provider-location-panel button:focus-visible { outline: 3px solid rgba(38, 137, 242, .28); outline-offset: 2px; }
+.provider-location-panel button[hidden] { display: none !important; }
 
 .footer { border-top: 1px solid var(--pd-border); margin-top: 20px; }
 .toast { border-color: var(--pd-border); border-radius: 15px; background: var(--pd-surface); }

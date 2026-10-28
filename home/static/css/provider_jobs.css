@@ -93,6 +93,7 @@
     cursor: pointer;
 }
 .location-retry-button:hover { background: #eaf4ff; }
+.location-retry-button[hidden] { display: none !important; }
 
 .delivery-jobs-list {
     display: grid;

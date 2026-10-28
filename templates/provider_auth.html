@@ -236,7 +236,7 @@
 
             <!-- Requires django-allauth Google provider configuration -->
             <a class="google-btn"
-               href="{% provider_login_url 'google' process='login' %}">
+               href="{% provider_login_url 'google' process='login' next='/provider/validate/' %}">
                 <svg viewBox="0 0 48 48" aria-hidden="true">
                     <path fill="#EA4335"
                           d="M24 9.5c3.5 0 6.6 1.2 9 3.6l6.7-6.7C35.6 2.5 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.3l7.8 6.1C12.3 13.1 17.7 9.5 24 9.5z"/>

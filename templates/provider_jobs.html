@@ -38,14 +38,14 @@
             <h2>Share your location</h2>
             <p id="gps-message" role="status" aria-live="polite">
                 {% if has_active_delivery %}
-                    Your active delivery needs location sharing. Allow GPS access when your browser asks.
+                    Tap “Start live location” and allow GPS access when your browser asks.
                 {% else %}
-                    Location sharing starts automatically after you accept a job.
+                    Accept an active delivery, then tap Start live location and allow GPS access.
                 {% endif %}
             </p>
         </div>
         <div hidden>{% csrf_token %}</div>
-        <button class="location-retry-button" type="button" id="location-retry" hidden>Retry location sharing</button>
+        <button class="location-retry-button" type="button" id="location-retry" {% if not has_active_delivery %}hidden{% endif %}>Start live location</button>
     </section>
 
     <div class="delivery-jobs-list">

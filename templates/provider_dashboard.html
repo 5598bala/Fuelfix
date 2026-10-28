@@ -34,9 +34,9 @@
             <h2>Availability and live tracking</h2>
             <p id="gps-message" role="status" aria-live="polite">
                 {% if has_active_delivery %}
-                    Your active delivery needs location sharing. Allow GPS access when your browser asks.
+                    Tap “Start live location” and allow GPS access when your browser asks.
                 {% elif provider.is_online %}
-                    You are online. Allow GPS access to share your location.
+                    Tap “Start live location” and allow GPS access when your browser asks.
                 {% else %}
                     Accept a job to start delivery tracking, or go online to share your location.
                 {% endif %}
@@ -44,7 +44,7 @@
             <button type="button" id="online-button">
                 {% if provider.is_online %}Go Offline{% else %}Go Online{% endif %}
             </button>
-            <button type="button" id="location-retry" hidden>Retry location sharing</button>
+            <button type="button" id="location-retry" {% if not has_active_delivery and not provider.is_online %}hidden{% endif %}>Start live location</button>
         </section>
     {% else %}
         <section class="panel provider-location-panel" role="status" aria-live="polite">

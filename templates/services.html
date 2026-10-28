@@ -1,0 +1,246 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}FuelFix | Our Services{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/services.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<main class="services-page" id="services-page">
+
+    <!-- Animated Background -->
+    <div class="services-bg" aria-hidden="true">
+        <span class="service-orb orb-one"></span>
+        <span class="service-orb orb-two"></span>
+        <span class="service-orb orb-three"></span>
+        <div class="service-grid"></div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="services-hero">
+        <div class="hero-content reveal">
+            <span class="eyebrow">
+                <span class="status-dot"></span>
+                YOUR ROADside SUPPORT PARTNER
+            </span>
+
+            <h1>
+                Everything Your Car Needs,
+                <span class="gradient-text">All in One Place.</span>
+            </h1>
+
+            <p>
+                From emergency fuel delivery to reliable mechanic assistance,
+                FuelFix helps you get back on the road with confidence.
+            </p>
+
+            <div class="hero-actions">
+                <a href="#service-list" class="service-btn primary-btn">
+                    Explore Services
+                    <span aria-hidden="true">↘</span>
+                </a>
+
+                <a href="#why-fuelfix" class="service-btn secondary-btn">
+                    Why FuelFix?
+                </a>
+            </div>
+
+            <div class="hero-trust">
+                <span><span class="trust-check">✓</span> Easy to use</span>
+                <span><span class="trust-check">✓</span> Roadside support</span>
+                <span><span class="trust-check">✓</span> Customer focused</span>
+            </div>
+        </div>
+
+        <!-- Animated CSS Illustration -->
+        <div class="services-visual reveal" aria-hidden="true">
+            <div class="visual-ring ring-one"></div>
+            <div class="visual-ring ring-two"></div>
+
+            <div class="visual-badge badge-top">
+                <span class="badge-icon">⚡</span>
+                <span>
+                    <strong>Quick Support</strong>
+                    <small>Help when needed</small>
+                </span>
+            </div>
+
+            <div class="car-illustration">
+                <div class="car-light"></div>
+                <div class="car-roof"></div>
+                <div class="car-window"></div>
+                <div class="car-body"></div>
+                <div class="car-front-light"></div>
+                <div class="car-wheel wheel-left"><span></span></div>
+                <div class="car-wheel wheel-right"><span></span></div>
+            </div>
+
+            <div class="visual-road"></div>
+
+            <div class="visual-badge badge-bottom">
+                <span class="badge-icon">📍</span>
+                <span>
+                    <strong>Roadside Care</strong>
+                    <small>Support on your journey</small>
+                </span>
+            </div>
+
+            <div class="floating-spark spark-one">✦</div>
+            <div class="floating-spark spark-two">✧</div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="service-section" id="service-list">
+        <div class="section-heading reveal">
+            <span class="section-label">WHAT WE OFFER</span>
+            <h2>Services That Keep You <span>Moving.</span></h2>
+            <p>Choose the assistance you need and take the next step.</p>
+        </div>
+
+        <div class="service-cards">
+
+            <!-- Service 1 -->
+            <article class="service-card fuel-card reveal">
+                <div class="card-top">
+                    <span class="service-number">01 / FUEL</span>
+                    <span class="service-icon">⛽</span>
+                </div>
+
+                <div class="icon-glow"></div>
+
+                <h3>Emergency Fuel</h3>
+                <p>
+                    Run out of fuel on the way? Request fuel assistance
+                    when you need help getting back on your journey.
+                </p>
+
+                <ul class="service-features">
+                    <li>Emergency fuel request</li>
+                    <li>Convenient assistance</li>
+                    <li>Simple request process</li>
+                </ul>
+
+                <a href="{% url 'customer_login' %}?next=/fuel-request/"
+                   class="card-link">
+                    Request Fuel <span>↗</span>
+                </a>
+            </article>
+
+            <!-- Service 2 -->
+            <article class="service-card mechanic-card reveal">
+                <div class="card-top">
+                    <span class="service-number">02 / REPAIR</span>
+                    <span class="service-icon">🔧</span>
+                </div>
+
+                <div class="icon-glow"></div>
+
+                <h3>Mechanic Assistance</h3>
+                <p>
+                    Experiencing vehicle trouble? Connect with mechanic
+                    assistance for help with common roadside problems.
+                </p>
+
+                <ul class="service-features">
+                    <li>Vehicle breakdown support</li>
+                    <li>Mechanical assistance</li>
+                    <li>Help with common issues</li>
+                </ul>
+
+                <a href="{% url 'customer_login' %}?next=/mechanic/"
+                   class="card-link">
+                    Find Assistance <span>↗</span>
+                </a>
+            </article>
+
+            <!-- Service 3 -->
+            <article class="service-card support-card reveal">
+                <div class="card-top">
+                    <span class="service-number">03 / SUPPORT</span>
+                    <span class="service-icon">🎧</span>
+                </div>
+
+                <div class="icon-glow"></div>
+
+                <h3>Customer Support</h3>
+                <p>
+                    Have a question or need help using FuelFix?
+                    Reach out for guidance with your service request.
+                </p>
+
+                <ul class="service-features">
+                    <li>Help with service requests</li>
+                    <li>Customer guidance</li>
+                    <li>Issue reporting</li>
+                </ul>
+
+                <a href="{% url 'contact' %}" class="card-link">
+                    Contact Us <span>↗</span>
+                </a>
+            </article>
+
+        </div>
+    </section>
+
+    <!-- Why Choose FuelFix -->
+    <section class="why-section" id="why-fuelfix">
+        <div class="why-content reveal">
+            <span class="section-label">THE FUELFIX DIFFERENCE</span>
+            <h2>Your Journey Matters. <span>We've Got Your Back.</span></h2>
+            <p>
+                FuelFix brings essential roadside service options together
+                in one convenient place, helping you find the assistance
+                you need with less hassle.
+            </p>
+        </div>
+
+        <div class="why-grid">
+            <div class="why-item reveal">
+                <span class="why-icon">⚡</span>
+                <h3>Simple Requests</h3>
+                <p>Get started with a clear, easy-to-follow process.</p>
+            </div>
+
+            <div class="why-item reveal">
+                <span class="why-icon">📍</span>
+                <h3>Location Details</h3>
+                <p>Share relevant location information for assistance.</p>
+            </div>
+
+            <div class="why-item reveal">
+                <span class="why-icon">🛠️</span>
+                <h3>Useful Services</h3>
+                <p>Explore fuel, mechanic and customer support options.</p>
+            </div>
+
+            <div class="why-item reveal">
+                <span class="why-icon">💙</span>
+                <h3>Customer First</h3>
+                <p>Find service options designed around your needs.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="services-cta reveal">
+        <div class="cta-orb"></div>
+        <span class="section-label">READY WHEN YOU ARE</span>
+        <h2>Need Roadside Assistance?</h2>
+        <p>Explore your options and get started with FuelFix today.</p>
+
+        <a href="{% url 'customer_login' %}" class="service-btn primary-btn">
+            Get Started <span>→</span>
+        </a>
+    </section>
+
+</main>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/services.js' %}" defer></script>
+{% endblock %}

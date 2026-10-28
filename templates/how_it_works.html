@@ -1,0 +1,278 @@
+
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}FuelFix | How It Works{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/how_it_works.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="how-page" id="how-page">
+
+    <!-- Animated background -->
+    <div class="how-background" aria-hidden="true">
+        <span class="bg-orb orb-one"></span>
+        <span class="bg-orb orb-two"></span>
+        <span class="bg-orb orb-three"></span>
+        <div class="bg-grid"></div>
+    </div>
+
+    <!-- HERO SECTION -->
+    <section class="how-hero">
+        <div class="hero-copy reveal">
+            <div class="eyebrow">
+                <span class="live-dot"></span>
+                SIMPLE. SMART. RELIABLE.
+            </div>
+
+            <h1>
+                How <span class="gradient-text">FuelFix</span><br>
+                works for you.
+            </h1>
+
+            <p class="hero-description">
+                Roadside trouble shouldn't ruin your journey.
+                Request the help you need in a few simple steps
+                and get back on the road with confidence.
+            </p>
+
+            <div class="hero-actions">
+                <a href="#how-steps" class="primary-button">
+                    Explore the process
+                    <span>→</span>
+                </a>
+
+                <a href="{% url 'customer_login' %}" class="secondary-button">
+                    Get started
+                </a>
+            </div>
+
+            <div class="hero-trust">
+                <div class="trust-item">
+                    <span class="trust-icon">⚡</span>
+                    <span>Simple process</span>
+                </div>
+                <div class="trust-item">
+                    <span class="trust-icon">📍</span>
+                    <span>Location-based requests</span>
+                </div>
+                <div class="trust-item">
+                    <span class="trust-icon">🛠️</span>
+                    <span>Roadside assistance</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Animated illustration -->
+        <div class="hero-visual reveal" aria-label="Illustration of a vehicle receiving roadside assistance">
+            <div class="visual-ring ring-one"></div>
+            <div class="visual-ring ring-two"></div>
+
+            <div class="floating-chip chip-top">
+                <span class="chip-icon">⚡</span>
+                <span>
+                    <strong>Quick request</strong>
+                    <small>Help starts here</small>
+                </span>
+            </div>
+
+            <div class="vehicle-scene">
+                <div class="scene-glow"></div>
+
+                <div class="road">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+
+                <div class="car">
+                    <div class="car-shadow"></div>
+                    <div class="car-roof"></div>
+                    <div class="car-window window-left"></div>
+                    <div class="car-window window-right"></div>
+                    <div class="car-body"></div>
+                    <div class="car-front"></div>
+                    <div class="car-light"></div>
+                    <div class="car-wheel wheel-left">
+                        <span></span>
+                    </div>
+                    <div class="car-wheel wheel-right">
+                        <span></span>
+                    </div>
+                </div>
+
+                <div class="location-pin">
+                    <div class="pin-head">📍</div>
+                    <div class="pin-ripple"></div>
+                </div>
+
+                <div class="mechanic-bubble">
+                    <span>🛠️</span>
+                </div>
+            </div>
+
+            <div class="floating-chip chip-bottom">
+                <span class="success-icon">✓</span>
+                <span>
+                    <strong>Roadside support</strong>
+                    <small>Help when you need it</small>
+                </span>
+            </div>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="steps-section" id="how-steps">
+        <div class="section-heading reveal">
+            <span class="section-label">THE PROCESS</span>
+            <h2>Help in <span class="gradient-text">4 simple steps</span></h2>
+            <p>From requesting assistance to getting back on the road.</p>
+        </div>
+
+        <div class="steps-track">
+
+            <article class="step-card reveal" style="--step-delay: 0s;">
+                <div class="step-top">
+                    <span class="step-number">01</span>
+                    <span class="step-icon">📱</span>
+                </div>
+                <div class="step-line"><span></span></div>
+                <h3>Choose your service</h3>
+                <p>
+                    Select the help you need, such as emergency fuel
+                    delivery or mechanic assistance.
+                </p>
+                <span class="step-tag">START HERE</span>
+            </article>
+
+            <article class="step-card reveal" style="--step-delay: .12s;">
+                <div class="step-top">
+                    <span class="step-number">02</span>
+                    <span class="step-icon">📍</span>
+                </div>
+                <div class="step-line"><span></span></div>
+                <h3>Share your location</h3>
+                <p>
+                    Provide your current location and the details
+                    needed to understand your roadside problem.
+                </p>
+                <span class="step-tag">YOUR LOCATION</span>
+            </article>
+
+            <article class="step-card reveal" style="--step-delay: .24s;">
+                <div class="step-top">
+                    <span class="step-number">03</span>
+                    <span class="step-icon">🛠️</span>
+                </div>
+                <div class="step-line"><span></span></div>
+                <h3>Connect with assistance</h3>
+                <p>
+                    Submit your request so the system can connect
+                    you with an available service provider.
+                </p>
+                <span class="step-tag">GET CONNECTED</span>
+            </article>
+
+            <article class="step-card reveal" style="--step-delay: .36s;">
+                <div class="step-top">
+                    <span class="step-number">04</span>
+                    <span class="step-icon">🚘</span>
+                </div>
+                <div class="step-line"><span></span></div>
+                <h3>Get back on the road</h3>
+                <p>
+                    Receive the requested assistance, confirm
+                    completion, and continue your journey.
+                </p>
+                <span class="step-tag">JOURNEY RESUMED</span>
+            </article>
+
+        </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section class="services-section">
+        <div class="section-heading reveal">
+            <span class="section-label">WHAT WE HELP WITH</span>
+            <h2>Support for your <span class="gradient-text">journey</span></h2>
+            <p>Explore the types of roadside help FuelFix is designed to offer.</p>
+        </div>
+
+        <div class="service-grid">
+
+            <article class="service-card reveal">
+                <div class="service-icon fuel-icon">⛽</div>
+                <span class="service-number">SERVICE 01</span>
+                <h3>Emergency Fuel</h3>
+                <p>
+                    Request fuel assistance when your vehicle runs
+                    low while you're on the road.
+                </p>
+                <span class="service-arrow">↗</span>
+            </article>
+
+            <article class="service-card reveal">
+                <div class="service-icon mechanic-icon">🔧</div>
+                <span class="service-number">SERVICE 02</span>
+                <h3>Mechanic Assistance</h3>
+                <p>
+                    Request help for common vehicle breakdowns
+                    and mechanical problems.
+                </p>
+                <span class="service-arrow">↗</span>
+            </article>
+
+            <article class="service-card reveal">
+                <div class="service-icon support-icon">🛡️</div>
+                <span class="service-number">SERVICE 03</span>
+                <h3>Customer Support</h3>
+                <p>
+                    Get help understanding the request process
+                    and the assistance available to you.
+                </p>
+                <span class="service-arrow">↗</span>
+            </article>
+
+        </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="final-cta reveal">
+        <div class="cta-decoration cta-decoration-one"></div>
+        <div class="cta-decoration cta-decoration-two"></div>
+
+        <div class="cta-content">
+            <span class="cta-label">YOUR NEXT JOURNEY STARTS HERE</span>
+            <h2>Don't let a breakdown<br>stop your journey.</h2>
+            <p>
+                Get started with FuelFix and explore roadside
+                assistance designed around your needs.
+            </p>
+            <a href="{% url 'customer_login' %}" class="cta-button">
+                Get started now <span>→</span>
+            </a>
+        </div>
+
+        <div class="cta-graphic" aria-hidden="true">
+            <div class="cta-circle">
+                <span>⛽</span>
+            </div>
+            <span class="cta-spark spark-one">✦</span>
+            <span class="cta-spark spark-two">✧</span>
+            <span class="cta-spark spark-three">✦</span>
+        </div>
+    </section>
+
+    <footer class="how-footer">
+        <span class="footer-mark">FF</span>
+        <p>FuelFix · Helping you move forward.</p>
+    </footer>
+
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/how_it_works.js' %}" defer></script>
+{% endblock %}

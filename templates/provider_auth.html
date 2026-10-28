@@ -1,0 +1,263 @@
+
+{% extends 'base.html' %}
+{% load static socialaccount %}
+
+{% block title %}Provider Portal | FuelFix{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/provider_auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="provider-page">
+    <div class="provider-shell">
+
+        <!-- Left branding panel -->
+        <div class="provider-hero">
+            <div class="hero-glow glow-one"></div>
+            <div class="hero-glow glow-two"></div>
+
+            <a href="{% url 'home' %}" class="brand">
+                <span class="brand-icon">F</span>
+                <span>Fuel<span class="brand-cyan">Fix</span></span>
+            </a>
+
+            <div class="hero-content">
+                <span class="eyebrow">
+                    <span class="live-dot"></span>
+                    PROVIDER PARTNER PORTAL
+                </span>
+
+                <h1>Power your work.<br>
+                    <span>Drive your growth.</span>
+                </h1>
+
+                <p>
+                    Join FuelFix and connect with customers who need
+                    reliable fuel delivery and roadside assistance.
+                </p>
+
+                <div class="hero-benefits">
+                    <div class="benefit">
+                        <span class="benefit-icon">✓</span>
+                        <div>
+                            <strong>More service requests</strong>
+                            <small>Reach customers who need your help.</small>
+                        </div>
+                    </div>
+
+                    <div class="benefit">
+                        <span class="benefit-icon">↗</span>
+                        <div>
+                            <strong>Manage jobs easily</strong>
+                            <small>Keep track of your work in one place.</small>
+                        </div>
+                    </div>
+
+                    <div class="benefit">
+                        <span class="benefit-icon">₹</span>
+                        <div>
+                            <strong>Grow your earnings</strong>
+                            <small>Build your service business with FuelFix.</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-footer">
+                <span class="footer-line"></span>
+                <span>YOUR SERVICE. YOUR GROWTH.</span>
+            </div>
+        </div>
+
+        <!-- Right authentication panel -->
+        <div class="provider-form-panel">
+            <div class="mobile-brand">
+                <span class="brand-icon">F</span>
+                <span>Fuel<span class="brand-cyan">Fix</span></span>
+            </div>
+
+            <div class="form-heading">
+                <span class="form-kicker">PROVIDER ACCOUNT</span>
+                <h2 id="formTitle">Welcome back<span>.</span></h2>
+                <p id="formSubtitle">Sign in to manage your service requests.</p>
+            </div>
+
+            <div class="auth-tabs" data-initial-mode="{{ auth_mode|default:'login' }}">
+                <button type="button" class="auth-tab active"
+                        id="loginTab" data-mode="login">
+                    Sign In
+                </button>
+                <button type="button" class="auth-tab"
+                        id="registerTab" data-mode="register">
+                    Create Account
+                </button>
+                <span class="tab-indicator" id="tabIndicator"></span>
+            </div>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="auth-message">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- LOGIN FORM -->
+            <form id="loginForm" class="auth-form"
+                  method="post" action="{% url 'provider_login' %}">
+                {% csrf_token %}
+
+                <label for="loginEmail">Email address</label>
+                <div class="input-wrap">
+                    <span class="input-icon">✉</span>
+                    <input type="email" id="loginEmail" name="email"
+                           placeholder="you@example.com"
+                           autocomplete="email" required>
+                </div>
+
+                <div class="label-row">
+                    <label for="loginPassword">Password</label>
+                    <a href="{% url 'provider_password_reset' %}" class="text-link">
+                        Forgot password?
+                    </a>
+                </div>
+
+                <div class="input-wrap">
+                    <span class="input-icon">⌑</span>
+                    <input type="password" id="loginPassword"
+                           name="password" placeholder="Enter your password"
+                           autocomplete="current-password" required>
+                    <button type="button" class="password-toggle"
+                            data-target="loginPassword"
+                            aria-label="Show password">Show</button>
+                </div>
+
+                <button type="submit" class="primary-btn">
+                    <span>Sign In to Provider Portal</span>
+                    <span class="btn-arrow">→</span>
+                </button>
+
+                <p class="switch-copy">
+                    New to FuelFix?
+                    <button type="button" class="inline-switch"
+                            data-mode="register">Create an account</button>
+                </p>
+            </form>
+
+            <!-- REGISTRATION FORM -->
+            <form id="registerForm" class="auth-form hidden"
+                  method="post" action="{% url 'provider_register' %}">
+                {% csrf_token %}
+
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="fullName">Full name</label>
+                        <div class="input-wrap">
+                            <span class="input-icon">♙</span>
+                            <input type="text" id="fullName" name="full_name"
+                                   placeholder="Your full name"
+                                   autocomplete="name" required>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="phone">Mobile number</label>
+                        <div class="input-wrap">
+                            <span class="input-icon">☎</span>
+                            <input type="tel" id="phone" name="phone"
+                                   placeholder="10-digit number"
+                                   inputmode="numeric"
+                                   pattern="[6-9][0-9]{9}"
+                                   maxlength="10" required>
+                        </div>
+                    </div>
+                </div>
+
+                <label for="registerEmail">Email address</label>
+                <div class="input-wrap">
+                    <span class="input-icon">✉</span>
+                    <input type="email" id="registerEmail" name="email"
+                           placeholder="you@example.com"
+                           autocomplete="email" required>
+                </div>
+
+                <label for="serviceType">Service type</label>
+                <div class="input-wrap select-wrap">
+                    <span class="input-icon">⚙</span>
+                    <select id="serviceType" name="service_type" required>
+                        <option value="">Choose your service</option>
+                        <option value="fuel_delivery">Fuel delivery</option>
+                        <option value="mechanic">Mechanic / roadside repair</option>
+                        <option value="both">Fuel delivery & mechanic</option>
+                    </select>
+                </div>
+
+                <label for="registerPassword">Create password</label>
+                <div class="input-wrap">
+                    <span class="input-icon">⌑</span>
+                    <input type="password" id="registerPassword"
+                           name="password" minlength="8"
+                           placeholder="At least 8 characters"
+                           autocomplete="new-password" required>
+                    <button type="button" class="password-toggle"
+                            data-target="registerPassword"
+                            aria-label="Show password">Show</button>
+                </div>
+
+                <label for="confirmPassword">Confirm password</label>
+                <div class="input-wrap">
+                    <span class="input-icon">⌑</span>
+                    <input type="password" id="confirmPassword"
+                           name="confirm_password"
+                           placeholder="Re-enter your password"
+                           autocomplete="new-password" required>
+                    <button type="button" class="password-toggle"
+                            data-target="confirmPassword"
+                            aria-label="Show password">Show</button>
+                </div>
+
+                <label class="terms-row">
+                    <input type="checkbox" id="terms" name="terms" value="accepted" required>
+                    <span>I agree to the terms and provider verification process.</span>
+                </label>
+
+                <button type="submit" class="primary-btn">
+                    <span>Create Provider Account</span>
+                    <span class="btn-arrow">→</span>
+                </button>
+
+                <p class="switch-copy">
+                    Already registered?
+                    <button type="button" class="inline-switch"
+                            data-mode="login">Sign in</button>
+                </p>
+            </form>
+
+            <div class="divider"><span>OR CONTINUE WITH</span></div>
+
+            <!-- Requires django-allauth Google provider configuration -->
+            <a class="google-btn"
+               href="{% provider_login_url 'google' process='login' %}">
+                <svg viewBox="0 0 48 48" aria-hidden="true">
+                    <path fill="#EA4335"
+                          d="M24 9.5c3.5 0 6.6 1.2 9 3.6l6.7-6.7C35.6 2.5 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.3l7.8 6.1C12.3 13.1 17.7 9.5 24 9.5z"/>
+                    <path fill="#4285F4"
+                          d="M46.1 24.5c0-1.6-.2-3.2-.5-4.7H24v9h12.4c-.6 2.9-2.2 5.3-4.6 6.9l7.4 5.7c4.3-4 6.9-9.9 6.9-16.9z"/>
+                    <path fill="#FBBC05"
+                          d="M10.4 28.6a14.4 14.4 0 0 1 0-9.2l-7.8-6.1a24 24 0 0 0 0 21.4l7.8-6.1z"/>
+                    <path fill="#34A853"
+                          d="M24 48c6.5 0 12-2.1 16-5.6l-7.4-5.7c-2.1 1.4-4.8 2.3-8.6 2.3-6.3 0-11.7-3.6-13.6-9.9l-7.8 6.1C6.5 43.6 14.6 48 24 48z"/>
+                </svg>
+                <span>Continue with Google</span>
+            </a>
+
+            <p class="security-note">
+                <span>●</span> Your account is protected by secure sign-in.
+            </p>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/provider_auth.js' %}"></script>
+{% endblock %}

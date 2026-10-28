@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static socialaccount %}
+{% block title %}FuelFix | Google Login{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/google_login.css' %}">
+{% endblock %}
+{% block content %}
+<div class="google-container">
+  <div class="google-card">
+    <img class="google-logo" src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google logo" width="24" height="24">
+    <h1>Sign in with Google</h1>
+    <p>Welcome to FuelFix! Continue with your Google account.</p>
+   <a href="{% provider_login_url 'google' %}">
+    <img
+        src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+        alt="Google"
+        width="22"
+    >
+    Continue with Google
+</a>
+    <div class="secure-text">Secure sign-in powered by Google OAuth</div>
+  </div>
+</div>
+{% endblock %}

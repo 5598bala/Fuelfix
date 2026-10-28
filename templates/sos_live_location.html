@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}FuelFix live location{% endblock %}
+{% block extra_css %}{% if geoapify_api_key %}<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">{% endif %}{% endblock %}
+{% block content %}
+<section class="sos-live-page" id="sosLivePage" data-location-url="{{ location_data_url }}" data-geoapify-key="{{ geoapify_api_key }}">
+  <div class="sos-live-card"><span class="sos-kicker">FUELFIX LIVE LOCATION</span><h1>Roadside help location</h1>
+    <p id="sosLiveStatus" role="status" aria-live="polite">Loading the latest location…</p>
+    {% if geoapify_api_key %}<div id="sosLiveMap" class="sos-live-map"></div>{% else %}<div class="sos-map-fallback">Map preview is unavailable until Geoapify is configured. The latest coordinates and map link will appear below.</div>{% endif %}
+    <div class="sos-live-details"><p><strong>Coordinates:</strong> <span id="sosLiveCoordinates">Waiting for location…</span></p><p><strong>Updated:</strong> <span id="sosLiveUpdated">—</span></p><a id="sosOpenMap" class="sos-share-link" href="#" target="_blank" rel="noopener" hidden>Open current point in Google Maps</a></div>
+    <p class="sos-privacy-note">This private link works while the customer is sharing from their device. Location stops refreshing if sharing is stopped or the browser closes.</p>
+  </div>
+</section>
+{% endblock %}
+{% block extra_js %}{% if geoapify_api_key %}<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>{% endif %}<script src="{% static 'js/sos_live_location.js' %}" defer></script>{% endblock %}

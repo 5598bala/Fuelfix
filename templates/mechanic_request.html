@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Request a mechanic | FuelFix{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/mechanic_request.css' %}">{% endblock %}
+{% block content %}
+<section class="mechanic-request-page"><div class="mechanic-request-card">
+  <span class="request-kicker">ROADSIDE ASSISTANCE</span><h1>Request a mechanic</h1>
+  <p>Tell us where you are and what happened. FuelFix support will contact you shortly.</p>
+  {% if errors %}<div class="mechanic-errors" role="alert"><ul>{% for error in errors %}<li>{{ error }}</li>{% endfor %}</ul></div>{% endif %}
+  <form method="post" id="mechanicRequestForm">{% csrf_token %}
+    <div class="mechanic-form-grid">
+      <label>Your name<input name="customer_name" value="{{ values.customer_name|default:'' }}" autocomplete="name" required></label>
+      <label>Mobile number<input name="phone" type="tel" inputmode="numeric" maxlength="10" pattern="[6-9][0-9]{9}" value="{{ values.phone|default:'' }}" autocomplete="tel" required></label>
+      <label class="wide">Current location / address<textarea name="address" id="mechanicAddress" rows="3" required>{{ values.address|default:'' }}</textarea></label>
+      <button type="button" class="mechanic-location-button" id="mechanicGetLocation">⌖ Use my current location</button>
+      <p class="mechanic-location-status" id="mechanicLocationStatus" role="status" aria-live="polite"></p>
+      <input type="hidden" name="latitude" id="mechanicLatitude" value="{{ values.latitude|default:'' }}"><input type="hidden" name="longitude" id="mechanicLongitude" value="{{ values.longitude|default:'' }}">
+      <label class="wide">Describe the problem<textarea name="issue_description" rows="4" placeholder="For example: the vehicle will not start" required>{{ values.issue_description|default:'' }}</textarea></label>
+    </div>
+    <button class="mechanic-submit" type="submit">Send mechanic request <span aria-hidden="true">→</span></button>
+  </form>
+  <a class="mechanic-back" href="{% url 'home' %}">Back to FuelFix</a>
+</div></section>
+{% endblock %}
+{% block extra_js %}<script src="{% static 'js/mechanic_request.js' %}" defer></script>{% endblock %}

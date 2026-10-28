@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}FuelFlix | Google Sign In{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/google_login.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="login-container">
+
+    <div class="login-card">
+
+        <div class="brand">
+            <h2>Fuel<span>Flix</span></h2>
+            <p>Your journey, our priority</p>
+        </div>
+
+        <img
+            src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+            alt="Google Logo"
+            class="google-logo"
+        >
+
+        <h1>Welcome Back!</h1>
+
+        <p class="description">
+            Sign in securely with your Google account
+            to continue using FuelFlix.
+        </p>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <button type="submit" class="google-btn">
+                <img
+                    src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                    alt=""
+                >
+                Continue with Google
+            </button>
+        </form>
+
+        <p class="secure">
+            🔒 Secure login powered by Google OAuth
+        </p>
+
+        <div class="footer">
+            © 2026 FuelFlix. All rights reserved.
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Request Confirmation | FuelFix{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/fuel_payment.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="fuel-payment-page">
+    <div class="fuel-payment-card request-confirmation-card">
+        <div class="confirmation-icon" aria-hidden="true">{% if fuel_request.payment_method == "online" %}✓{% else %}⛽{% endif %}</div>
+        <p class="payment-kicker">REQUEST RECEIVED</p>
+        <h1>{% if fuel_request.payment_method == "online" %}Payment complete{% else %}Fuel request received{% endif %}</h1>
+        <p class="payment-intro">Request <strong>#{{ fuel_request.id }}</strong> is saved.</p>
+
+        <div class="payment-order-summary">
+            <div><span>Fuel</span><strong>{{ fuel_request.fuel_type }} · {{ fuel_request.quantity }} litres</strong></div>
+            <div><span>Payment</span><strong>{% if fuel_request.payment_method == "online" %}Paid · ₹{{ fuel_request.payment_amount|floatformat:2 }}{% else %}Cash on delivery{% endif %}</strong></div>
+            <div><span>Status</span><strong>{{ fuel_request.get_status_display }}</strong></div>
+            {% if fuel_request.provider %}
+            <div><span>Provider</span><strong>{{ fuel_request.provider.full_name }}</strong></div>
+            {% endif %}
+        </div>
+
+        {% if fuel_request.provider %}
+            <a class="pay-now-button confirmation-track-link" href="{{ tracking_url }}">Track your provider</a>
+        {% else %}
+            <div class="payment-alert">Your request is paid and saved. FuelFix is finding an available nearby provider.</div>
+        {% endif %}
+        <a class="payment-retry-link" href="{% url 'dashboard' %}">Go to my dashboard</a>
+        <a class="payment-back-link confirmation-home-link" href="{% url 'home' %}">Return home</a>
+    </div>
+</section>
+{% endblock %}

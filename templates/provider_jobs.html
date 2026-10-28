@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}My Fuel Jobs | FuelFix{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/provider_jobs.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="container provider-jobs-page">
+    <header class="provider-jobs-heading">
+        <div>
+            <span class="provider-jobs-eyebrow">PROVIDER WORKSPACE</span>
+            <h1>My Fuel Delivery Jobs</h1>
+            <p>Review your assigned requests and keep each delivery moving.</p>
+        </div>
+        <span class="jobs-count">{{ jobs|length }} JOB{{ jobs|length|pluralize|upper }}</span>
+    </header>
+
+    {% if messages %}
+        <div class="jobs-messages" role="status" aria-live="polite">
+            {% for message in messages %}
+                <p class="jobs-message jobs-message--{{ message.tags }}">{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <section id="provider-location-sharing"
+             class="provider-location-card"
+             data-active-delivery="{{ has_active_delivery|yesno:'true,false' }}"
+             data-is-online="{{ provider.is_online|yesno:'true,false' }}"
+             data-location-url="{% url 'provider_update_location' %}"
+             data-availability-url="{% url 'provider_set_online' %}">
+        <div class="provider-location-icon" aria-hidden="true">⌖</div>
+        <div class="provider-location-copy">
+            <span class="provider-jobs-eyebrow">LIVE DELIVERY TRACKING</span>
+            <h2>Share your location</h2>
+            <p id="gps-message" role="status" aria-live="polite">
+                {% if has_active_delivery %}
+                    Your active delivery needs location sharing. Allow GPS access when your browser asks.
+                {% else %}
+                    Location sharing starts automatically after you accept a job.
+                {% endif %}
+            </p>
+        </div>
+        <div hidden>{% csrf_token %}</div>
+        <button class="location-retry-button" type="button" id="location-retry" hidden>Retry location sharing</button>
+    </section>
+
+    <div class="delivery-jobs-list">
+        {% for job in jobs %}
+            <article class="job-card delivery-job-card delivery-job-card--{{ job.status|slugify }}">
+                <header class="delivery-job-heading">
+                    <div>
+                        <span class="request-kicker">FUEL DELIVERY</span>
+                        <h2>Request #{{ job.id }}</h2>
+                    </div>
+                    <span class="delivery-status delivery-status--{{ job.status|slugify }}">
+                        <i aria-hidden="true"></i>{{ job.get_status_display }}
+                    </span>
+                </header>
+
+                <div class="delivery-job-details">
+                    <div class="delivery-detail">
+                        <span>Customer</span>
+                        <strong>{{ job.customer_name }}</strong>
+                    </div>
+                    <div class="delivery-detail">
+                        <span>Phone</span>
+                        <a href="tel:{{ job.phone }}">{{ job.phone }}</a>
+                    </div>
+                    <div class="delivery-detail">
+                        <span>Fuel type</span>
+                        <strong>{{ job.fuel_type }}</strong>
+                    </div>
+                    <div class="delivery-detail">
+                        <span>Quantity</span>
+                        <strong>{{ job.quantity }} litres</strong>
+                    </div>
+                    <div class="delivery-detail delivery-detail--address">
+                        <span>Delivery address</span>
+                        <p>{{ job.address }}</p>
+                    </div>
+                </div>
+
+                {% if job.status == "assigned" or job.status == "accepted" or job.status == "out_for_delivery" %}
+                    <footer class="delivery-job-footer">
+                        <span class="delivery-next-step">
+                            {% if job.status == "assigned" %}Choose whether to take this request.{% elif job.status == "accepted" %}Ready to go? Start the delivery when you set off.{% else %}Mark the request complete once fuel has been delivered.{% endif %}
+                        </span>
+                        <div class="delivery-job-actions">
+                            {% if job.status == "assigned" %}
+                                <form method="post" action="{% url 'update_fuel_job' job.id 'accept' %}">
+                                    {% csrf_token %}
+                                    <button class="delivery-action delivery-action--accept" type="submit"><span aria-hidden="true">✓</span> Accept Job</button>
+                                </form>
+                                <form method="post" action="{% url 'update_fuel_job' job.id 'reject' %}">
+                                    {% csrf_token %}
+                                    <button class="delivery-action delivery-action--reject" type="submit"><span aria-hidden="true">×</span> Reject</button>
+                                </form>
+                            {% elif job.status == "accepted" %}
+                                <form method="post" action="{% url 'update_fuel_job' job.id 'dispatch' %}">
+                                    {% csrf_token %}
+                                    <button class="delivery-action delivery-action--start" type="submit"><span aria-hidden="true">➜</span> Start Delivery</button>
+                                </form>
+                            {% elif job.status == "out_for_delivery" %}
+                                <form method="post" action="{% url 'update_fuel_job' job.id 'deliver' %}">
+                                    {% csrf_token %}
+                                    <button class="delivery-action delivery-action--complete" type="submit"><span aria-hidden="true">✓</span> Mark as Delivered</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </footer>
+                {% endif %}
+            </article>
+        {% empty %}
+            <div class="jobs-empty-state">
+                <span aria-hidden="true">⛽</span>
+                <h2>No fuel jobs yet</h2>
+                <p>New requests will appear here once they are assigned to your account.</p>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/provider_tracking.js' %}" defer></script>
+{% endblock %}

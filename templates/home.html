@@ -1,0 +1,380 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}FuelFix – Urgent Fuel & Mechanic Service{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO SECTION -->
+<section class="hero">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+
+    <div class="container hero-grid">
+
+        <div class="hero-copy reveal">
+            <span class="badge">
+                <span class="pulse"></span>
+                Emergency help · 24 × 7
+            </span>
+
+            <h1>
+                Stuck on the road?<br>
+                <span>We reach you fast.</span>
+            </h1>
+
+            <p class="lead">
+                Out of petrol or vehicle broken down?
+                Request urgent fuel delivery or a roadside mechanic
+                in seconds. Track them live, verify with OTP,
+                and pay securely.
+            </p>
+
+            <div class="cta-row">
+                <a href="{% url 'customer_login' %}" class="btn btn-fuel">
+                    ⛽ Need Fuel Now
+                </a>
+
+                <a href="{% url 'customer_login' %}" class="btn btn-repair">
+                    🔧 Need a Mechanic
+                </a>
+            </div>
+
+            <div class="trust">
+                <div>
+                    <b>~10 min</b>
+                    <span>Avg. arrival</span>
+                </div>
+                <div>
+                    <b>4.8 ★</b>
+                    <span>Customer rating</span>
+                </div>
+                <div>
+                    <b>24/7</b>
+                    <span>Always online</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- PHONE MOCKUP -->
+        <div class="phone-wrap reveal">
+            <div class="float-card fc1">✅ Provider accepted</div>
+            <div class="float-card fc2">🔐 OTP verified</div>
+
+            <div class="phone">
+                <div class="screen">
+
+                    <div class="map">
+                        <svg class="route" viewBox="0 0 280 210"
+                             aria-label="Illustrative provider route">
+                            <path d="M40 150 Q110 120 150 90 T230 50"
+                                  fill="none"
+                                  stroke="#ffb703"
+                                  stroke-width="3"
+                                  stroke-dasharray="7 7"/>
+                        </svg>
+
+                        <span class="pin me">📍</span>
+                        <span class="pin van">🚐</span>
+                    </div>
+
+                    <div class="tag">● LIVE TRACKING</div>
+
+                    <div class="eta">
+                        7 min <small>away</small>
+                    </div>
+
+                    <div class="prov">
+                        <div class="avatar">👨‍🔧</div>
+                        <div>
+                            <b>Anish</b>
+                            <span>Fuel Delivery · ⭐ 4.9</span>
+                        </div>
+                    </div>
+
+                    <div class="otp-label">
+                        Share this OTP on arrival
+                    </div>
+
+                    <div class="otp">
+                        <div>4</div>
+                        <div>8</div>
+                        <div>2</div>
+                        <div>9</div>
+                    </div>
+
+                    <p class="demo-note">
+                        Sample illustration — real tracking requires integration.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- SERVICES SECTION -->
+<section id="services" class="page-section">
+    <div class="container">
+
+        <div class="sec-head reveal">
+            <small>Our Services</small>
+            <h2>Two emergencies. One app.</h2>
+            <p>
+                Pick what you need — find the nearest available provider.
+            </p>
+        </div>
+
+        <div class="services">
+
+            <article class="svc fuel reveal">
+                <div class="ic">⛽</div>
+                <h3>Urgent Petrol Delivery</h3>
+                <p>Ran dry? We bring fuel straight to your location.</p>
+
+                <ul>
+                    <li>Petrol and diesel available</li>
+                    <li>Choose quantity in litres</li>
+                    <li>Transparent pricing</li>
+                </ul>
+
+                <a href="{% url 'customer_login' %}" class="btn btn-fuel">
+                    Request Fuel →
+                </a>
+            </article>
+
+            <article class="svc repair reveal">
+                <div class="ic">🔧</div>
+                <h3>Mechanic Repair Service</h3>
+                <p>
+                    Breakdown, flat tyre or dead battery —
+                    get roadside assistance.
+                </p>
+
+                <ul>
+                    <li>Tyre, battery and jump-start</li>
+                    <li>Engine and electrical checks</li>
+                    <li>Spare parts assistance</li>
+                </ul>
+
+                <a href="{% url 'customer_login' %}" class="btn btn-repair">
+                    Request Mechanic →
+                </a>
+            </article>
+
+        </div>
+    </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how" class="features page-section">
+    <div class="container">
+
+        <div class="sec-head reveal">
+            <small>How it works</small>
+            <h2>From request to review</h2>
+            <p>A simple 9-step service journey.</p>
+        </div>
+
+        <div class="steps">
+            <article class="step reveal">
+                <span class="n">01</span>
+                <div class="e">📍</div>
+                <h4>Share Location</h4>
+                <p>Log in and choose Fuel or Repair.</p>
+            </article>
+
+            <article class="step reveal">
+                <span class="n">02</span>
+                <div class="e">🧠</div>
+                <h4>Priority Engine</h4>
+                <p>Create your service request.</p>
+            </article>
+
+            <article class="step reveal">
+                <span class="n">03</span>
+                <div class="e">🚀</div>
+                <h4>Provider Dispatch</h4>
+                <p>Find an available service provider.</p>
+            </article>
+
+            <article class="step reveal">
+                <span class="n">04</span>
+                <div class="e">🛰️</div>
+                <h4>Live Tracking</h4>
+                <p>Track the provider when GPS is integrated.</p>
+            </article>
+
+            <article class="step reveal">
+                <span class="n">05</span>
+                <div class="e">🔐</div>
+                <h4>OTP Verification</h4>
+                <p>Verify the provider securely.</p>
+            </article>
+
+            <article class="step reveal">
+                <span class="n">06</span>
+                <div class="e">🛠️</div>
+                <h4>Service Completed</h4>
+                <p>Get fuel delivery or roadside repair.</p>
+            </article>
+
+            <article class="step reveal">
+                <span class="n">07</span>
+                <div class="e">🧾</div>
+                <h4>Invoice</h4>
+                <p>Review your service charges.</p>
+            </article>
+
+            <article class="step reveal">
+                <span class="n">08</span>
+                <div class="e">💳</div>
+                <h4>Easy Payment</h4>
+                <p>Use the payment methods your site supports.</p>
+            </article>
+
+            <article class="step reveal">
+                <span class="n">09</span>
+                <div class="e">⭐</div>
+                <h4>Review</h4>
+                <p>Rate the service and share feedback.</p>
+            </article>
+        </div>
+
+    </div>
+</section>
+
+<!-- FEATURES SECTION -->
+<section id="features" class="page-section">
+    <div class="container">
+
+        <div class="sec-head reveal">
+            <small>Why FuelFix</small>
+            <h2>Built for emergencies</h2>
+        </div>
+
+        <div class="feat-grid">
+            <article class="feat reveal">
+                <span class="e">⚡</span>
+                <h5>Priority Dispatch</h5>
+                <p>Prioritise urgent requests.</p>
+            </article>
+
+            <article class="feat reveal">
+                <span class="e">🛰️</span>
+                <h5>Live GPS</h5>
+                <p>Track providers when GPS is connected.</p>
+            </article>
+
+            <article class="feat reveal">
+                <span class="e">🛡️</span>
+                <h5>Verified Providers</h5>
+                <p>Support provider verification and OTP.</p>
+            </article>
+
+            <article class="feat reveal">
+                <span class="e">💰</span>
+                <h5>Fair Pricing</h5>
+                <p>Make service charges clear.</p>
+            </article>
+        </div>
+
+        <div class="stats">
+            <div class="stat reveal">
+                <b>12,000+</b>
+                <span>Requests served</span>
+            </div>
+            <div class="stat reveal">
+                <b>850+</b>
+                <span>Providers</span>
+            </div>
+            <div class="stat reveal">
+                <b>40</b>
+                <span>Cities covered</span>
+            </div>
+            <div class="stat reveal">
+                <b>98%</b>
+                <span>Satisfaction</span>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- PROVIDER SECTION -->
+<section class="provider-section">
+    <div class="container">
+        <div class="provider reveal">
+            <h2>Own a fuel van or a garage?</h2>
+            <p>
+                Join FuelFix to receive service requests
+                and grow your business.
+            </p>
+
+            <a href="{% url 'google_login' %}" class="btn btn-white">
+                Become a Service Provider →
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ADMIN PANEL ACCESS -->
+<section class="admin-access-section" aria-labelledby="adminAccessTitle">
+    <div class="container">
+        <div class="admin-access-card">
+            <div class="admin-access-icon" aria-hidden="true">
+                <svg viewBox="0 0 48 48" focusable="false">
+                    <path d="M24 5.5a3 3 0 0 1 3 3v1.2a14.4 14.4 0 0 1 4.4 1.8l.9-.9a3 3 0 0 1 4.2 0l.9.9a3 3 0 0 1 0 4.2l-.9.9a14.4 14.4 0 0 1 1.8 4.4h1.2a3 3 0 0 1 3 3v1.3a3 3 0 0 1-3 3h-1.2a14.4 14.4 0 0 1-1.8 4.4l.9.9a3 3 0 0 1 0 4.2l-.9.9a3 3 0 0 1-4.2 0l-.9-.9a14.4 14.4 0 0 1-4.4 1.8v1.2a3 3 0 0 1-3 3h-1.3a3 3 0 0 1-3-3v-1.2a14.4 14.4 0 0 1-4.4-1.8l-.9.9a3 3 0 0 1-4.2 0l-.9-.9a3 3 0 0 1 0-4.2l.9-.9a14.4 14.4 0 0 1-1.8-4.4H7.2a3 3 0 0 1-3-3v-1.3a3 3 0 0 1 3-3h1.2a14.4 14.4 0 0 1 1.8-4.4l-.9-.9a3 3 0 0 1 0-4.2l.9-.9a3 3 0 0 1 4.2 0l.9.9a14.4 14.4 0 0 1 4.4-1.8V8.5a3 3 0 0 1 3-3H24Zm-.7 12.2a6.3 6.3 0 1 0 0 12.6 6.3 6.3 0 0 0 0-12.6Z"/>
+                </svg>
+            </div>
+
+            <div class="admin-access-copy">
+                <span class="admin-access-eyebrow"><span></span> FUELFIX OPERATIONS</span>
+                <h2 id="adminAccessTitle">FuelFix Admin Panel</h2>
+                <p>Manage service requests, providers, fuel rates and SOS options from one place.</p>
+                <small>Secure sign-in for authorized administrators</small>
+            </div>
+
+            <a href="{% url 'admin:index' %}" class="admin-access-link">
+                <span>Open Admin Panel</span>
+                <span class="admin-access-arrow" aria-hidden="true">↗</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const items = document.querySelectorAll(".reveal");
+
+    if (!("IntersectionObserver" in window)) {
+        items.forEach(function (item) {
+            item.classList.add("is-visible");
+        });
+        return;
+    }
+
+    const observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("is-visible");
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.12
+    });
+
+    items.forEach(function (item) {
+        observer.observe(item);
+    });
+});
+</script>
+{% endblock %}

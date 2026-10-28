@@ -1,0 +1,969 @@
+
+/* ==========================================
+   FUELFIX CUSTOMER LOGIN - PREMIUM UI
+========================================== */
+
+:root {
+    --fx-blue: #1677ff;
+    --fx-blue-dark: #0753d5;
+    --fx-cyan: #20d7ef;
+    --fx-navy: #07152e;
+    --fx-muted: #7a89a2;
+    --fx-border: #e2eaf5;
+    --fx-white: #ffffff;
+}
+
+#customer-login,
+#customer-login * {
+    box-sizing: border-box;
+}
+
+.auth-wrap {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 790px;
+    padding: 65px 24px 25px;
+    overflow: hidden;
+    color: var(--fx-navy);
+    background:
+        radial-gradient(ellipse at 15% 15%, #d9eaff 0%, transparent 42%),
+        radial-gradient(ellipse at 90% 80%, #c9f9ff 0%, transparent 38%),
+        linear-gradient(135deg, #f7faff, #eef5ff 55%, #f7fcff);
+    font-family: "Poppins", "Segoe UI", sans-serif;
+}
+
+/* Background layer */
+.auth-bg {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.glow {
+    position: absolute;
+    display: block;
+    border-radius: 50%;
+    filter: blur(2px);
+    will-change: transform;
+}
+
+.glow-one {
+    top: -170px;
+    left: -100px;
+    width: 440px;
+    height: 440px;
+    background: radial-gradient(circle, #54a5ff55, #54a5ff00 70%);
+    animation: fxGlowOne 13s ease-in-out infinite alternate;
+}
+
+.glow-two {
+    right: -130px;
+    bottom: -180px;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, #22d3ee44, #22d3ee00 70%);
+    animation: fxGlowTwo 15s ease-in-out infinite alternate;
+}
+
+.glow-three {
+    top: 32%;
+    left: 45%;
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle, #a78bfa25, transparent 70%);
+    animation: fxGlowThree 11s ease-in-out infinite alternate;
+}
+
+.grid-overlay {
+    position: absolute;
+    inset: 0;
+    opacity: 0.24;
+    background-image:
+        linear-gradient(#7ba7d510 1px, transparent 1px),
+        linear-gradient(90deg, #7ba7d510 1px, transparent 1px);
+    background-size: 42px 42px;
+    mask-image: linear-gradient(to bottom, black, transparent 90%);
+    -webkit-mask-image: linear-gradient(to bottom, black, transparent 90%);
+}
+
+/* Main layout */
+.auth-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(350px, 460px);
+    align-items: center;
+    gap: clamp(35px, 6vw, 95px);
+    width: min(1120px, 100%);
+    margin: auto;
+}
+
+/* Intro content */
+.auth-intro {
+    position: relative;
+    padding: 20px 0;
+    animation: fxIntroEnter 0.9s cubic-bezier(.2, .8, .2, 1) both;
+}
+
+.brand-mark {
+    display: grid;
+    place-items: center;
+    width: 66px;
+    height: 66px;
+    margin-bottom: 30px;
+    border: 1px solid #ffffff;
+    border-radius: 21px;
+    background: linear-gradient(135deg, #ffffff, #e4f3ff);
+    box-shadow:
+        0 14px 35px #2679d51c,
+        inset 0 1px 0 #ffffff;
+    font-size: 2rem;
+    animation: fxBrandFloat 4s ease-in-out infinite;
+}
+
+.eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #1264d8;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.status-dot,
+.live-indicator span {
+    width: 8px;
+    height: 8px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: #13bd83;
+    box-shadow: 0 0 0 5px #13bd831c;
+    animation: fxStatusPulse 2s ease-out infinite;
+}
+
+.auth-intro h1 {
+    margin: 20px 0;
+    color: var(--fx-navy);
+    font-size: clamp(2.8rem, 5vw, 4.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -2.7px;
+}
+
+.auth-intro h1 span {
+    color: transparent;
+    background: linear-gradient(100deg, #1264e8, #10bde4, #5865ed);
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    animation: fxTextGradient 5s linear infinite;
+}
+
+.intro-text {
+    max-width: 490px;
+    color: #64748b;
+    font-size: 1rem;
+    line-height: 1.9;
+}
+
+.intro-points {
+    display: grid;
+    gap: 16px;
+    max-width: 440px;
+    margin-top: 32px;
+}
+
+.intro-point {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border: 1px solid #ffffffb8;
+    border-radius: 16px;
+    background: #ffffff8a;
+    backdrop-filter: blur(12px);
+    transition:
+        transform 0.3s ease,
+        background 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.intro-point:hover {
+    transform: translateX(7px);
+    background: #ffffffd9;
+    box-shadow: 0 10px 28px #174a8012;
+}
+
+.point-icon {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #e6f1ff, #d9faff);
+    font-size: 1.35rem;
+}
+
+.intro-point strong,
+.intro-point small {
+    display: block;
+}
+
+.intro-point strong {
+    color: #142b4d;
+    font-size: 0.9rem;
+}
+
+.intro-point small {
+    margin-top: 3px;
+    color: var(--fx-muted);
+    font-size: 0.76rem;
+}
+
+/* Decorative orbit */
+.intro-orbit {
+    position: absolute;
+    top: 5%;
+    right: 0;
+    width: 160px;
+    height: 160px;
+    opacity: 0.8;
+    pointer-events: none;
+}
+
+.orbit {
+    position: absolute;
+    inset: 0;
+    border: 1px solid #258bff2a;
+    border-radius: 50%;
+}
+
+.orbit-a {
+    animation: fxOrbitSpin 15s linear infinite;
+}
+
+.orbit-b {
+    inset: 20px;
+    border-style: dashed;
+    animation: fxOrbitSpin 20s linear infinite reverse;
+}
+
+.orbit-core {
+    position: absolute;
+    inset: 52px;
+    display: grid;
+    place-items: center;
+    border: 1px solid #ffffff;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ffffff, #d9f3ff);
+    box-shadow: 0 8px 25px #1681e72b;
+    color: #1264d8;
+    font-size: 1.1rem;
+    font-weight: 900;
+}
+
+.orbit-satellite {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    width: 31px;
+    height: 31px;
+    border: 1px solid white;
+    border-radius: 50%;
+    background: white;
+    box-shadow: 0 5px 16px #164d8220;
+    animation: fxSatelliteFloat 3s ease-in-out infinite;
+}
+
+.satellite-a {
+    top: 8px;
+    right: 18px;
+}
+
+.satellite-b {
+    bottom: 10px;
+    left: 12px;
+    animation-delay: -1.5s;
+}
+
+/* Login card */
+.auth-card {
+    position: relative;
+    padding: 35px;
+    overflow: hidden;
+    border: 1px solid #ffffff;
+    border-radius: 28px;
+    background: #ffffffd9;
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    box-shadow:
+        0 30px 90px #143b7019,
+        0 8px 28px #1747790b,
+        inset 0 1px 0 #ffffff;
+    animation: fxCardEnter 0.95s 0.12s cubic-bezier(.2, .8, .2, 1) both;
+    transition: box-shadow 0.4s ease;
+}
+
+.auth-card::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, #1264e8, #20d7ef, #8562f6, #1264e8);
+    background-size: 250% 100%;
+    content: "";
+    animation: fxBorderFlow 5s linear infinite;
+}
+
+.auth-card::after {
+    position: absolute;
+    top: -110px;
+    right: -100px;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #42b5ff12, transparent 70%);
+    content: "";
+    pointer-events: none;
+}
+
+.auth-card:hover {
+    box-shadow:
+        0 38px 100px #143b7025,
+        0 12px 32px #17477910;
+}
+
+.card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 28px;
+}
+
+.secure-badge,
+.live-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.67rem;
+    font-weight: 800;
+    letter-spacing: 0.7px;
+}
+
+.secure-badge {
+    padding: 8px 11px;
+    border: 1px solid #dbe9ff;
+    border-radius: 30px;
+    background: #eff6ff;
+    color: #1264d8;
+}
+
+.live-indicator {
+    color: #0b996b;
+}
+
+.live-indicator span {
+    width: 7px;
+    height: 7px;
+}
+
+/* Card heading */
+.card-heading {
+    margin-bottom: 25px;
+    animation: fxContentEnter 0.7s 0.2s both;
+}
+
+.welcome-text {
+    margin: 0 0 8px;
+    color: #1973e8;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 1.6px;
+}
+
+.auth-card h2 {
+    margin: 0;
+    color: #091a35;
+    font-size: clamp(1.8rem, 4vw, 2.2rem);
+    font-weight: 800;
+    letter-spacing: -1px;
+    line-height: 1.25;
+}
+
+.card-description {
+    margin: 10px 0 0;
+    color: #7a89a2;
+    font-size: 0.84rem;
+    line-height: 1.7;
+}
+
+/* Form */
+#csrf-form {
+    display: none;
+}
+
+.form-field {
+    margin-top: 19px;
+}
+
+.form-field label {
+    display: block;
+    margin-bottom: 9px;
+    color: #263957;
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.input-shell {
+    display: flex;
+    align-items: center;
+    min-height: 56px;
+    padding: 0 13px;
+    border: 1.5px solid #e0e8f3;
+    border-radius: 14px;
+    background: #ffffffd9;
+    transition:
+        border-color 0.3s ease,
+        box-shadow 0.3s ease,
+        background 0.3s ease,
+        transform 0.3s ease;
+}
+
+.input-shell:hover {
+    border-color: #b5d0f8;
+}
+
+.input-shell:focus-within {
+    transform: translateY(-2px);
+    border-color: #1677ff;
+    background: #fff;
+    box-shadow:
+        0 0 0 4px #1677ff14,
+        0 10px 25px #1677ff0c;
+}
+
+.input-icon {
+    margin-right: 10px;
+    font-size: 1.1rem;
+}
+
+.country-code {
+    margin-right: 11px;
+    padding-right: 11px;
+    border-right: 1px solid #dfe7f2;
+    color: #344563;
+    font-size: 0.86rem;
+    font-weight: 700;
+}
+
+.input-shell input {
+    width: 100%;
+    min-width: 0;
+    min-height: 52px;
+    padding: 10px 0;
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: #132743;
+    font-family: inherit;
+    font-size: 0.9rem;
+}
+
+.input-shell input::placeholder {
+    color: #a0aec0;
+    transition: opacity 0.25s ease;
+}
+
+.input-shell input:focus::placeholder {
+    opacity: 0.5;
+}
+
+.field-hint {
+    display: block;
+    margin-top: 9px;
+    color: #8592a8;
+    font-size: 0.72rem;
+}
+
+/* Action buttons */
+.action-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 55px;
+    margin-top: 22px;
+    padding: 14px 18px;
+    overflow: hidden;
+    border: 0;
+    border-radius: 14px;
+    background: linear-gradient(105deg, #1677ff, #0753d5, #0bb8df);
+    background-size: 200% 100%;
+    box-shadow: 0 10px 25px #1264e82b;
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.92rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        background-position 0.5s ease,
+        opacity 0.25s ease;
+}
+
+.action-btn:hover:not(:disabled) {
+    transform: translateY(-3px);
+    background-position: 100% 50%;
+    box-shadow: 0 16px 32px #1264e842;
+}
+
+.action-btn:active:not(:disabled) {
+    transform: translateY(0) scale(0.985);
+}
+
+.action-btn:focus-visible,
+.google-btn:focus-visible {
+    outline: 3px solid #79b5ff;
+    outline-offset: 4px;
+}
+
+.btn-arrow {
+    display: inline-block;
+    font-size: 1.25rem;
+    transition: transform 0.25s ease;
+}
+
+.action-btn:hover:not(:disabled) .btn-arrow {
+    transform: translateX(5px);
+}
+
+/* Button shimmer */
+.btn-shimmer {
+    position: absolute;
+    top: -50%;
+    left: -90%;
+    width: 45%;
+    height: 200%;
+    transform: skewX(-23deg);
+    background: linear-gradient(
+        90deg,
+        transparent,
+        #ffffff66,
+        transparent
+    );
+    pointer-events: none;
+}
+
+.action-btn:hover:not(:disabled) .btn-shimmer {
+    animation: fxShimmer 0.8s ease;
+}
+
+.action-btn:disabled {
+    opacity: 0.7;
+    cursor: wait;
+    box-shadow: none;
+}
+
+/* OTP section */
+#otp-area[hidden] {
+    display: none !important;
+}
+
+#otp-area:not([hidden]) {
+    animation: fxOtpEnter 0.55s cubic-bezier(.2, .8, .2, 1) both;
+}
+
+.otp-divider,
+.card-separator {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 25px;
+}
+
+.otp-divider span,
+.card-separator span {
+    flex: 1;
+    height: 1px;
+    background: #e6edf6;
+}
+
+.otp-divider small,
+.card-separator small {
+    color: #95a1b4;
+    font-size: 0.63rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.otp-shell input {
+    text-align: center;
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: 9px;
+}
+
+.verify-btn {
+    background: linear-gradient(105deg, #087eeb, #0753d5, #12b9ce);
+}
+
+/* Status message */
+.auth-message {
+    min-height: 22px;
+    margin: 14px 0 0;
+    color: #087b58;
+    font-size: 0.79rem;
+    font-weight: 600;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+.auth-message:not(:empty) {
+    animation: fxMessageIn 0.3s ease both;
+}
+
+/* Google sign in */
+.card-separator {
+    margin: 22px 0 17px;
+}
+
+.google-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    min-height: 51px;
+    padding: 12px 16px;
+    border: 1px solid #e0e7f1;
+    border-radius: 13px;
+    background: #fff;
+    color: #33435c;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition:
+        transform 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.google-btn:hover {
+    transform: translateY(-2px);
+    border-color: #b7d1f7;
+    box-shadow: 0 9px 24px #16487912;
+}
+
+.google-symbol {
+    display: grid;
+    place-items: center;
+    width: 25px;
+    height: 25px;
+    border: 1px solid #e6ebf2;
+    border-radius: 50%;
+    color: #4285f4;
+    background: #fff;
+    font-family: Arial, sans-serif;
+    font-size: 1rem;
+    font-weight: 900;
+}
+
+.privacy-note {
+    margin: 20px 0 0;
+    color: #8996aa;
+    font-size: 0.68rem;
+    line-height: 1.7;
+    text-align: center;
+}
+
+/* Bottom brand note */
+.bottom-note {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 7px;
+    margin-top: 30px;
+    color: #8190a7;
+    font-size: 0.75rem;
+    animation: fxContentEnter 1s 0.5s both;
+}
+
+/* ==========================================
+   ANIMATIONS
+========================================== */
+
+@keyframes fxCardEnter {
+    from {
+        opacity: 0;
+        transform: translateY(32px) scale(0.965);
+        filter: blur(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+@keyframes fxIntroEnter {
+    from {
+        opacity: 0;
+        transform: translateX(-28px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fxContentEnter {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fxGlowOne {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+    100% {
+        transform: translate(90px, 70px) scale(1.2);
+    }
+}
+
+@keyframes fxGlowTwo {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+    100% {
+        transform: translate(-80px, -65px) scale(1.16);
+    }
+}
+
+@keyframes fxGlowThree {
+    0% {
+        transform: translate(-30px, 0);
+    }
+    100% {
+        transform: translate(60px, 45px);
+    }
+}
+
+@keyframes fxBrandFloat {
+    0%, 100% {
+        transform: translateY(0) rotate(0);
+    }
+    50% {
+        transform: translateY(-7px) rotate(-3deg);
+    }
+}
+
+@keyframes fxTextGradient {
+    to {
+        background-position: 200% center;
+    }
+}
+
+@keyframes fxBorderFlow {
+    to {
+        background-position: 250% center;
+    }
+}
+
+@keyframes fxStatusPulse {
+    0% {
+        box-shadow: 0 0 0 0 #13bd8340;
+    }
+    70% {
+        box-shadow: 0 0 0 7px #13bd8300;
+    }
+    100% {
+        box-shadow: 0 0 0 0 #13bd8300;
+    }
+}
+
+@keyframes fxOrbitSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes fxSatelliteFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-7px);
+    }
+}
+
+@keyframes fxShimmer {
+    from {
+        left: -90%;
+    }
+    to {
+        left: 140%;
+    }
+}
+
+@keyframes fxOtpEnter {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fxMessageIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==========================================
+   RESPONSIVE DESIGN
+========================================== */
+
+@media (max-width: 900px) {
+    .auth-wrap {
+        min-height: auto;
+        padding-top: 50px;
+    }
+
+    .auth-layout {
+        grid-template-columns: 1fr;
+        max-width: 500px;
+        gap: 35px;
+    }
+
+    .auth-intro {
+        padding: 10px 0 0;
+    }
+
+    .auth-intro h1 {
+        font-size: clamp(2.6rem, 8vw, 3.6rem);
+    }
+
+    .intro-points {
+        gap: 10px;
+    }
+
+    .intro-orbit {
+        top: 0;
+        right: 0;
+        transform: scale(0.7);
+        transform-origin: top right;
+    }
+
+    .auth-card {
+        padding: 30px;
+    }
+}
+
+@media (max-width: 520px) {
+    .auth-wrap {
+        padding: 32px 14px 20px;
+    }
+
+    .auth-layout {
+        gap: 25px;
+    }
+
+    .brand-mark {
+        width: 54px;
+        height: 54px;
+        margin-bottom: 22px;
+        border-radius: 17px;
+        font-size: 1.7rem;
+    }
+
+    .auth-intro h1 {
+        font-size: 2.5rem;
+        letter-spacing: -1.5px;
+    }
+
+    .intro-text {
+        font-size: 0.88rem;
+    }
+
+    .intro-orbit {
+        display: none;
+    }
+
+    .auth-card {
+        padding: 25px 20px;
+        border-radius: 23px;
+    }
+
+    .card-top {
+        margin-bottom: 23px;
+    }
+
+    .auth-card h2 {
+        font-size: 1.8rem;
+    }
+
+    .intro-point {
+        padding: 12px;
+    }
+
+    .bottom-note {
+        text-align: center;
+        font-size: 0.68rem;
+    }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    #customer-login *,
+    #customer-login *::before,
+    #customer-login *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+
+
+
+/* JavaScript status-message colors */
+.auth-message.message-success {
+    color: #087b58;
+}
+
+.auth-message.message-error {
+    color: #c62828;
+}
+
+.auth-message.message-info {
+    color: #1264d8;
+}
+
+.input-shell.input-error {
+    border-color: #dc2626;
+    box-shadow: 0 0 0 3px #dc262615;
+}

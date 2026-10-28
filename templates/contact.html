@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}FuelFix | Contact{% endblock %}
+{% block content %}
+<section class="container" style="padding:48px 16px;max-width:900px;margin:auto">
+  {% if contact_info %}
+    <h1>{{ contact_info.title }}</h1>
+    {% if contact_info.subtitle %}<p>{{ contact_info.subtitle }}</p>{% endif %}
+    {% if contact_info.image %}<img src="{{ contact_info.image.url }}" alt="Contact" style="max-width:100%;height:auto">{% endif %}
+    {% if contact_info.phone %}<p><strong>Phone:</strong> {{ contact_info.phone }}</p>{% endif %}
+    {% if contact_info.email %}<p><strong>Email:</strong> {{ contact_info.email }}</p>{% endif %}
+    {% if contact_info.address %}<p><strong>Address:</strong> {{ contact_info.address }}</p>{% endif %}
+    {% if contact_info.working_hours %}<p><strong>Working hours:</strong> {{ contact_info.working_hours }}</p>{% endif %}
+    {% if contact_info.emergency_text %}<p>{{ contact_info.emergency_text }}</p>{% endif %}
+  {% else %}
+    <h1>Get In Touch</h1>
+    <p>Contact information has not been added yet. Please add it from the Django admin panel.</p>
+  {% endif %}
+</section>
+{% endblock %}

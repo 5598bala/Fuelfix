@@ -1,0 +1,186 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f5f8fc">
+    <script>
+        try {
+            const savedTheme = localStorage.getItem("fuelfix-theme");
+            if (savedTheme === "light" || savedTheme === "dark") {
+                document.documentElement.dataset.theme = savedTheme;
+            }
+        } catch (error) {
+            // Theme still works for this page if browser storage is unavailable.
+        }
+    </script>
+
+    <script>
+        document.documentElement.classList.add("fuelfix-loader-enabled");
+        window.setTimeout(function () {
+            document.documentElement.classList.remove("fuelfix-loader-enabled");
+        }, 5000);
+    </script>
+    <title>{% block title %}FuelFix – Urgent Fuel & Mechanic Service{% endblock %}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+    <link rel="stylesheet" href="{% static 'css/theme.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sos.css' %}">
+</head>
+
+<body>
+<div id="fuelfixPageLoader" class="fuelfix-page-loader" role="status" aria-live="polite">
+    <div class="fuelfix-loader-scene" aria-hidden="true">
+        <div class="fuelfix-loader-orbit"></div>
+        <div class="fuelfix-loader-shadow"></div>
+        <div class="fuelfix-loader-can">
+            <div class="fuelfix-loader-can-side"></div>
+            <div class="fuelfix-loader-can-top"></div>
+            <div class="fuelfix-loader-can-front">
+                <span class="fuelfix-loader-handle"></span>
+                <span class="fuelfix-loader-mark">FF</span>
+                <span class="fuelfix-loader-fuel-line"></span>
+            </div>
+            <span class="fuelfix-loader-cap"></span>
+        </div>
+    </div>
+    <div class="fuelfix-loader-brand">FUEL<span>FIX</span></div>
+    <p class="fuelfix-loader-copy">Getting your journey ready</p>
+    <div class="fuelfix-loader-progress" aria-hidden="true"><span></span></div>
+</div>
+
+<header class="site-header">
+    <div class="container nav">
+
+        <a href="{% url 'home' %}" class="logo fuelfix-brand" aria-label="FuelFix home">
+            <span class="fuelfix-logo-crop" aria-hidden="true"><img src="{% static 'images/fuelfix-logo.png' %}" alt=""></span>
+        </a>
+
+        <nav id="nav" class="site-nav" aria-label="Main navigation">
+            <ul>
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'services' %}">Services</a></li>
+                <li><a href="{% url 'how_it_works' %}">How it works</a></li>
+                <li><a href="{% url 'features' %}">Features</a></li>
+                <li><a href="{% url 'spareparts' %}">Spare Parts</a></li>
+                <li><a href="{% url 'contact' %}">Contact</a></li>
+            </ul>
+        </nav>
+
+        <div class="nav-btns">
+            <a href="{% url 'provider_auth' %}" class="btn btn-ghost">
+                Provider Login
+            </a>
+
+            <a href="{% url 'customer_login' %}" class="btn btn-primary">
+                Customer Login
+            </a>
+
+            <button class="theme-toggle" type="button" data-theme-toggle
+                    aria-label="Switch to dark theme" aria-pressed="false" title="Switch to dark theme">
+                <span class="theme-toggle-icon" aria-hidden="true">☾</span>
+                <span class="theme-toggle-label">Dark</span>
+            </button>
+
+            <button
+                class="menu-toggle"
+                type="button"
+                aria-label="Toggle navigation"
+                aria-controls="nav"
+                aria-expanded="false"
+                onclick="const nav=document.getElementById('nav'); const opened=nav.classList.toggle('open'); this.setAttribute('aria-expanded', opened ? 'true' : 'false');">
+                ☰
+            </button>
+        </div>
+
+    </div>
+</header>
+
+<main id="main-content">
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="site-footer">
+    <div class="container">
+
+        <div class="foot">
+            <div class="footer-about">
+                <a href="{% url 'home' %}" class="logo fuelfix-brand" aria-label="FuelFix home">
+                    <span class="fuelfix-logo-crop" aria-hidden="true"><img src="{% static 'images/fuelfix-logo.png' %}" alt=""></span>
+                </a>
+                <p>
+                    Urgent petrol delivery and mechanic repair,
+                    wherever you're stranded.
+                </p>
+            </div>
+
+            <div>
+                <b>Company</b>
+                <ul>
+                    <li><a href="{% url 'home' %}#features">About</a></li>
+                    <li><a href="{% url 'contact' %}">Contact</a></li>
+                    <li><a href="{% url 'spareparts' %}">Spare Parts</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <b>Services</b>
+                <ul>
+                    <li><a href="{% url 'home' %}#services">Fuel Delivery</a></li>
+                    <li><a href="{% url 'home' %}#services">Mechanic Repair</a></li>
+                    <li><a href="{% url 'home' %}#features">Live Tracking</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <b>Support</b>
+                <ul>
+                    <li>📞 24/7 Helpline</li>
+                    <li>✉️ help@fuelfix.com</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="copy">
+            © 2026 FuelFix. All rights reserved.
+        </div>
+    </div>
+</footer>
+
+<button type="button" class="sos" id="sosToggle" data-sos-open aria-label="Open FuelFix SOS options" aria-controls="sosDialog" aria-expanded="false">SOS</button>
+<div class="sos-overlay" id="sosDialog" data-support-phone="{{ sos_support_phone }}" role="dialog" aria-modal="true" aria-labelledby="sosTitle" hidden>
+  <section class="sos-panel">
+    <div class="sos-panel-top"><div><span class="sos-kicker">FUELFIX RAPID HELP</span><h2 id="sosTitle">What do you need?</h2><p>Choose an option and we’ll help you get moving.</p></div><button type="button" class="sos-close" data-sos-close aria-label="Close SOS menu">×</button></div>
+    <div class="sos-options">
+      {% for option in sos_options %}
+        {% if option.action == "fuel" %}<a class="sos-option" href="{% url 'fuel_request' %}"><span class="sos-option-icon" aria-hidden="true">⛽</span><span><strong>{{ option.label }}</strong><small>{{ option.description }}</small></span><span class="sos-arrow" aria-hidden="true">→</span></a>
+        {% elif option.action == "mechanic" %}<a class="sos-option" href="{% url 'mechanic_request' %}"><span class="sos-option-icon" aria-hidden="true">🔧</span><span><strong>{{ option.label }}</strong><small>{{ option.description }}</small></span><span class="sos-arrow" aria-hidden="true">→</span></a>
+        {% elif option.action == "support" and option.phone %}<a class="sos-option" href="tel:{{ option.phone|urlencode }}"><span class="sos-option-icon" aria-hidden="true">☎</span><span><strong>{{ option.label }}</strong><small>{{ option.description }} · {{ option.phone }}</small></span><span class="sos-arrow" aria-hidden="true">→</span></a>
+        {% elif option.action == "share_location" %}<button type="button" class="sos-option" data-sos-start-location><span class="sos-option-icon" aria-hidden="true">⌖</span><span><strong>{{ option.label }}</strong><small>{{ option.description }}</small></span><span class="sos-arrow" aria-hidden="true">→</span></button>{% endif %}
+      {% endfor %}
+    </div>
+    <div class="sos-location-tools" id="sosLocationTools" hidden>
+      <form id="sosCsrfForm">{% csrf_token %}</form>
+      <p class="sos-location-status" id="sosLocationStatus" role="status" aria-live="polite">Allow location access to start sharing.</p>
+      <div class="sos-share-actions" id="sosShareActions" hidden><button type="button" class="sos-share-button" id="sosShareNow">Share live link</button><a class="sos-share-link" id="sosLiveLink" href="#" target="_blank" rel="noopener" hidden>Open live location</a><a class="sos-share-link" id="sosSendSms" href="#" hidden>Text link to FuelFix</a></div>
+      <button type="button" class="sos-stop-button" id="sosStopLocation" hidden>Stop sharing location</button>
+    </div>
+    <p class="sos-privacy-note">Your live location is shared only after you choose this option. You can stop sharing at any time.</p>
+  </section>
+</div>
+
+<script src="{% static 'js/script.js' %}" defer></script>
+<script src="{% static 'js/theme.js' %}" defer></script>
+<script src="{% static 'js/sos.js' %}" defer></script>
+<script src="{% static 'js/page_loader.js' %}" defer></script>
+{% block extra_js %}{% endblock %}
+
+</body>
+</html>

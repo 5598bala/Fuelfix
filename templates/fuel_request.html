@@ -1,0 +1,336 @@
+
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Fuel Request | FuelFix{% endblock %}
+
+{% block extra_css %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/fuel_request.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="fuel-page" data-geoapify-key="{{ geoapify_api_key }}">
+
+    <section class="fuel-hero">
+        <div class="hero-copy">
+            <span class="eyebrow">
+                <span class="live-dot"></span>
+                ON-DEMAND FUEL DELIVERY
+            </span>
+
+            <h1>Fuel up.<br><span>Keep moving.</span></h1>
+
+            <p>
+                Running low? We'll bring fuel to your location,
+                so your journey doesn't have to stop.
+            </p>
+
+            <div class="hero-points">
+                <span>✓ Simple booking</span>
+                <span>✓ Convenient delivery</span>
+                <span>✓ Easy request</span>
+            </div>
+        </div>
+
+        <div class="hero-art" aria-hidden="true">
+            <div class="art-glow"></div>
+            <div class="orbit orbit-a"></div>
+            <div class="orbit orbit-b"></div>
+
+            <div class="fuel-can">
+                <div class="can-cap"></div>
+                <div class="can-handle"></div>
+                <div class="can-window"><span></span></div>
+                <div class="can-label">FUEL<span>FIX</span></div>
+                <div class="can-wave"></div>
+            </div>
+
+            <div class="floating-chip chip-fast">⚡ Quick request</div>
+            <div class="floating-chip chip-safe">✓ Convenient delivery</div>
+        </div>
+    </section>
+
+    <section class="request-layout">
+
+        <div class="request-main">
+
+            <div class="section-heading">
+                <div>
+                    <span class="section-kicker">LET'S GET YOU MOVING</span>
+                    <h2>Request Fuel Delivery</h2>
+                    <p>Enter your vehicle and delivery details below.</p>
+                </div>
+                <div class="step-pill">01 &nbsp; Your details</div>
+            </div>
+
+            <!-- Django success/error messages -->
+            {% if messages %}
+                <div class="form-messages" role="status" aria-live="polite">
+                    {% for message in messages %}
+                        <p class="message {{ message.tags }}">
+                            {{ message }}
+                        </p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form id="fuelRequestForm"
+                  method="POST"
+                  action="{% url 'fuel_request' %}">
+
+                {% csrf_token %}
+
+                <div class="form-grid">
+
+                    <!-- Customer name -->
+                    <div class="field">
+                        <label for="customerName">Full Name <span>*</span></label>
+                        <div class="input-wrap">
+                            <span class="field-icon">♙</span>
+                            <input type="text"
+                                   id="customerName"
+                                   name="customer_name"
+                                   placeholder="Enter your full name"
+                                   autocomplete="name"
+                                   value="{{ form_data.customer_name|default:'' }}"
+                                   required>
+                        </div>
+                        <small class="field-error"></small>
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="field">
+                        <label for="phone">Phone Number <span>*</span></label>
+                        <div class="input-wrap">
+                            <span class="field-icon">☎</span>
+                            <input type="tel"
+                                   id="phone"
+                                   name="phone"
+                                   maxlength="10"
+                                   minlength="10"
+                                   pattern="[6-9][0-9]{9}"
+                                   inputmode="numeric"
+                                   placeholder="10-digit mobile number"
+                                   autocomplete="tel"
+                                   value="{{ form_data.phone|default:'' }}"
+                                   required>
+                        </div>
+                        <small class="field-error"></small>
+                    </div>
+
+                    <!-- Fuel type -->
+                    <div class="field">
+                        <label for="fuelType">Fuel Type <span>*</span></label>
+                        <div class="input-wrap">
+                            <span class="field-icon">⛽</span>
+                            <select id="fuelType" name="fuel_type" required>
+                                <option value="">Choose fuel type</option>
+                                <option value="Petrol" {% if form_data.fuel_type == "Petrol" %}selected{% endif %}>Petrol</option>
+                                <option value="Diesel" {% if form_data.fuel_type == "Diesel" %}selected{% endif %}>Diesel</option>
+                            </select>
+                        </div>
+                        <small class="field-error"></small>
+                    </div>
+
+                    <!-- Quantity -->
+                    <div class="field">
+                        <label for="quantity">Quantity (litres) <span>*</span></label>
+                        <div class="input-wrap">
+                            <span class="field-icon">◉</span>
+                            <select id="quantity" name="quantity" required>
+                                <option value="">Select quantity</option>
+                                <option value="1" {% if form_data.quantity == "1" %}selected{% endif %}>1 litre</option>
+                                <option value="2" {% if form_data.quantity == "2" %}selected{% endif %}>2 litres</option>
+                                <option value="3" {% if form_data.quantity == "3" %}selected{% endif %}>3 litres</option>
+                                <option value="5" {% if form_data.quantity == "5" %}selected{% endif %}>5 litres</option>
+                                <option value="10" {% if form_data.quantity == "10" %}selected{% endif %}>10 litres</option>
+                            </select>
+                        </div>
+                        <small class="field-error"></small>
+                    </div>
+
+                    <!-- Vehicle -->
+                    <div class="field full-field">
+                        <label for="vehicle">Vehicle Details <span>*</span></label>
+                        <div class="input-wrap">
+                            <span class="field-icon">🚘</span>
+                            <input type="text"
+                                   id="vehicle"
+                                   name="vehicle"
+                                   placeholder="Vehicle model / registration number"
+                                   value="{{ form_data.vehicle|default:'' }}"
+                                   required>
+                        </div>
+                        <small class="field-error"></small>
+                    </div>
+
+                    <!-- Delivery address -->
+                    <div class="field full-field">
+                        <label for="address">Delivery Location <span>*</span></label>
+
+                        <div class="input-wrap">
+                            <span class="field-icon">⌖</span>
+                            <textarea id="address"
+                                      name="address"
+                                      rows="3"
+                                      placeholder="Enter your complete delivery address"
+                                      required>{{ form_data.address|default:'' }}</textarea>
+                        </div>
+
+                        <button type="button"
+                                id="getLocationBtn"
+                                class="location-btn">
+                            <span>⌖</span> Use My Current Location
+                        </button>
+
+                        <p id="locationStatus"
+                           class="location-status"
+                           role="status"
+                           aria-live="polite"></p>
+
+                        <small class="field-error"></small>
+
+                        <input type="hidden" id="latitude" name="latitude" value="{{ form_data.latitude|default:'' }}">
+                        <input type="hidden" id="longitude" name="longitude" value="{{ form_data.longitude|default:'' }}">
+                    </div>
+
+                    <!-- IMPORTANT: field name matches Django view -->
+                    <div class="field">
+                        <label for="deliveryDate">Preferred Date <span>*</span></label>
+                        <div class="input-wrap">
+                            <span class="field-icon">▦</span>
+                            <input type="date"
+                                   id="deliveryDate"
+                                   name="preferred_date"
+                                   value="{{ form_data.preferred_date|default:'' }}"
+                                   required>
+                        </div>
+                        <small class="field-error"></small>
+                    </div>
+
+                    <!-- IMPORTANT: values are valid Django time strings -->
+                    <div class="field">
+                        <label for="deliveryTime">Preferred Time <span>*</span></label>
+                        <div class="input-wrap">
+                            <span class="field-icon">◷</span>
+                            <select id="deliveryTime"
+                                    name="preferred_time"
+                                    required>
+                                <option value="">Choose time slot</option>
+                                <option value="09:00" {% if form_data.preferred_time == "09:00" %}selected{% endif %}>9 AM – 12 PM</option>
+                                <option value="12:00" {% if form_data.preferred_time == "12:00" %}selected{% endif %}>12 PM – 3 PM</option>
+                                <option value="15:00" {% if form_data.preferred_time == "15:00" %}selected{% endif %}>3 PM – 6 PM</option>
+                                <option value="18:00" {% if form_data.preferred_time == "18:00" %}selected{% endif %}>6 PM – 9 PM</option>
+                            </select>
+                        </div>
+                        <small class="field-error"></small>
+                    </div>
+
+                    <!-- Payment preference -->
+                    <div class="field full-field">
+                        <label for="paymentMethod">Payment Preference <span>*</span></label>
+                        <div class="input-wrap">
+                            <span class="field-icon">₹</span>
+                            <select id="paymentMethod"
+                                    name="payment_method"
+                                    required>
+                                <option value="cod" {% if form_data.payment_method == "cod" %}selected{% endif %}>Pay after delivery</option>
+                                <option value="online" {% if form_data.payment_method == "online" %}selected{% endif %}>Online payment</option>
+                            </select>
+                        </div>
+                        <small class="field-error"></small>
+                    </div>
+
+                </div>
+
+                <!-- Confirmation -->
+                <label class="confirm-row">
+                    <input type="checkbox" id="confirmDetails" required>
+                    <span class="custom-check"></span>
+                    <span>I confirm that my contact and delivery details are correct.</span>
+                </label>
+
+                <small id="confirmError" class="confirm-error"></small>
+
+                <button class="submit-request" id="submitRequestBtn" type="submit">
+                    <span class="button-text">Submit Fuel Request</span>
+                    <span class="button-arrow">↗</span>
+                </button>
+
+                <p class="form-note">
+                    🔒 Your details are used to process your request.
+                </p>
+
+                <div id="formMessage"
+                     class="form-message"
+                     role="status"
+                     aria-live="polite"></div>
+
+            </form>
+        </div>
+
+        <aside class="request-side">
+            <div class="summary-card">
+
+                <div class="summary-top">
+                    <span class="summary-icon">⛽</span>
+                    <span class="summary-status"><i></i> FUELFIX SERVICE</span>
+                </div>
+
+                <h3>Your journey<br>matters to us.</h3>
+                <p>Provide accurate details to help your delivery team understand your request.</p>
+
+                <div class="summary-divider"></div>
+
+                <div class="summary-item">
+                    <span class="summary-item-icon">01</span>
+                    <div>
+                        <b>Tell us what you need</b>
+                        <small>Select fuel type and quantity.</small>
+                    </div>
+                </div>
+
+                <div class="summary-item">
+                    <span class="summary-item-icon">02</span>
+                    <div>
+                        <b>Add your location</b>
+                        <small>Use your current location or enter your address.</small>
+                    </div>
+                </div>
+
+                <div class="summary-item">
+                    <span class="summary-item-icon">03</span>
+                    <div>
+                        <b>Review your details</b>
+                        <small>Check everything before submitting.</small>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="help-card">
+                <span class="help-icon">?</span>
+                <div>
+                    <b>Need assistance?</b>
+                    <p>Check your phone number and address before submitting.</p>
+                </div>
+            </div>
+        </aside>
+
+    </section>
+
+    <footer class="fuel-footer">
+        POWERING YOUR JOURNEY <span>•</span> <b>FUELFIX</b>
+    </footer>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/fuel_request.js' %}" defer></script>
+
+
+{% endblock %}

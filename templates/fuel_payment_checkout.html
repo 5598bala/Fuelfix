@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Secure Payment | FuelFix{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/fuel_payment.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="fuel-payment-page">
+    <div class="fuel-payment-card">
+        <a class="payment-back-link" href="{% url 'dashboard' %}">← Back to dashboard</a>
+        <div class="payment-brand-mark" aria-hidden="true">⛽</div>
+        <p class="payment-kicker">SECURE CHECKOUT</p>
+        <h1>Complete your payment</h1>
+        <p class="payment-intro">Pay securely to confirm your FuelFix delivery request.</p>
+
+        <div class="payment-order-summary">
+            <div><span>Fuel request</span><strong>#{{ fuel_request.id }}</strong></div>
+            <div><span>Fuel</span><strong>{{ fuel_request.fuel_type }} · {{ fuel_request.quantity }} litres</strong></div>
+            <div><span>Delivery address</span><strong>{{ fuel_request.address }}</strong></div>
+            <div class="payment-total"><span>Total</span><strong>₹{{ fuel_request.payment_amount|floatformat:2 }}</strong></div>
+        </div>
+
+        {% if gateway_error %}
+            <div class="payment-alert" role="alert">{{ gateway_error }}</div>
+            <a class="payment-retry-link" href="{% url 'fuel_payment_checkout' fuel_request.id %}">Try checkout again</a>
+        {% elif fuel_request.payment_order_id and razorpay_key_id %}
+            <p class="payment-method-note"><span>✓</span> Cards and UPI are available in the secure Razorpay checkout.</p>
+            <button type="button" class="pay-now-button" id="payNowButton">Pay ₹{{ fuel_request.payment_amount|floatformat:2 }}</button>
+            <p class="payment-secure-caption">Your card details are entered in Razorpay's checkout and are not stored by FuelFix.</p>
+            <div id="paymentMessage" class="payment-message" role="status" aria-live="polite"></div>
+            <form id="paymentCsrfForm" hidden>{% csrf_token %}</form>
+        {% endif %}
+
+        <div class="payment-footer">
+            <span>Request #{{ fuel_request.id }}</span>
+            <span>🔒 Secured by Razorpay</span>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+{% if fuel_request.payment_order_id and razorpay_key_id and not gateway_error %}
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+(() => {
+    const button = document.getElementById("payNowButton");
+    const message = document.getElementById("paymentMessage");
+    const csrfToken = document.querySelector('#paymentCsrfForm input[name="csrfmiddlewaretoken"]')?.value || "";
+    const options = {
+        key: "{{ razorpay_key_id|escapejs }}",
+        amount: {{ amount_paise }},
+        currency: "INR",
+        name: "FuelFix",
+        description: "Fuel delivery request #{{ fuel_request.id }}",
+        order_id: "{{ fuel_request.payment_order_id|escapejs }}",
+        prefill: {
+            name: "{{ fuel_request.customer_name|escapejs }}",
+            email: "{{ customer_email|escapejs }}",
+            contact: "{{ fuel_request.phone|escapejs }}"
+        },
+        theme: { color: "#1478e8" },
+        modal: {
+            ondismiss: () => {
+                button.disabled = false;
+                button.textContent = "Pay ₹{{ fuel_request.payment_amount|floatformat:2 }}";
+                message.textContent = "Checkout closed. Your request is saved; you can try payment again. Your delivery is assigned after payment is confirmed.";
+            }
+        },
+        handler: async (paymentResult) => {
+            button.disabled = true;
+            button.textContent = "Confirming payment…";
+            message.textContent = "Verifying your payment securely…";
+            try {
+                const response = await fetch("{% url 'verify_fuel_payment' fuel_request.id %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": csrfToken,
+                        "X-Requested-With": "XMLHttpRequest"
+                    },
+                    body: JSON.stringify(paymentResult)
+                });
+                const result = await response.json();
+                if (!response.ok || !result.ok) {
+                    throw new Error(result.error || "Payment confirmation is still pending.");
+                }
+                window.location.assign(result.redirect_url);
+            } catch (error) {
+                message.textContent = error.message + " You can retry checkout safely.";
+                button.disabled = false;
+                button.textContent = "Retry payment";
+            }
+        }
+    };
+
+    const checkout = new Razorpay(options);
+    checkout.on("payment.failed", (event) => {
+        const detail = event.error?.description || "The payment was not completed.";
+        message.textContent = detail + " You can try another card or UPI option.";
+        button.disabled = false;
+        button.textContent = "Retry payment";
+    });
+    button.addEventListener("click", () => {
+        message.textContent = "";
+        checkout.open();
+    });
+})();
+</script>
+{% endif %}
+{% endblock %}

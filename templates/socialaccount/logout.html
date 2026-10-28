@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}FuelFlix | Sign Out{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/logout.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="logout-container">
+    <div class="logout-card">
+
+        <div class="brand">
+            Fuel<span>Flix</span>
+        </div>
+
+        <div class="logout-icon">↗</div>
+
+        <h1>Sign Out?</h1>
+
+        <p class="message">
+            Are you sure you want to sign out of your
+            FuelFlix account?
+        </p>
+
+        <form method="post" action="{% url 'account_logout' %}">
+            {% csrf_token %}
+
+            <button type="submit" class="logout-btn">
+                Yes, Sign Out
+            </button>
+        </form>
+
+        <a href="{% url 'dashboard' %}" class="cancel-btn">
+            Cancel and Return to Dashboard
+        </a>
+
+        <p class="secure-text">
+            Your account security matters to us.
+        </p>
+
+    </div>
+</div>
+
+{% endblock %}

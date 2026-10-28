@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block title %}Track Your FuelFix Request{% endblock %}
+
+{% block content %}
+<div style="max-width:1100px;margin:35px auto;padding:20px;">
+    <h1>Track Your FuelFix Provider</h1>
+    <p>Request #{{ job.id }}</p>
+    <p>Delivery address: {{ job.address }}</p>
+
+    <p>
+        Current status:
+        <strong id="job-status">{{ job.get_status_display }}</strong>
+    </p>
+    <p id="location-status" role="status" aria-live="polite">
+        {% if job.status == "accepted" or job.status == "out_for_delivery" %}
+            Waiting for the provider's GPS location...
+        {% elif job.status == "delivered" %}
+            Your delivery is complete.
+        {% else %}
+            Live tracking will begin after the provider accepts your request.
+        {% endif %}
+    </p>
+
+    {% if geoapify_api_key %}
+        <div id="tracking-map"
+             style="height:480px;width:100%;border-radius:16px;z-index:1;">
+        </div>
+        <p id="map-load-status" role="status" aria-live="polite"></p>
+    {% else %}
+        <div role="status" style="min-height:160px;padding:24px;border-radius:16px;background:#eef4fb;color:#24405e;">
+            Geoapify is not configured yet. Add a Geoapify API key to enable the tracking map.
+        </div>
+    {% endif %}
+</div>
+
+{% if geoapify_api_key %}
+<link rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(() => {
+    const dataUrl = "{% url 'customer_tracking_data' job.tracking_token %}";
+    const destination = {% if job.latitude is not None and job.longitude is not None %}
+        [{{ job.latitude }}, {{ job.longitude }}]
+    {% else %}
+        null
+    {% endif %};
+    const apiKey = "{{ geoapify_api_key|escapejs }}";
+    const locationStatus = document.getElementById("location-status");
+    const mapLoadStatus = document.getElementById("map-load-status");
+    const map = L.map("tracking-map");
+    const initialCenter = destination || [11.0168, 76.9558];
+    map.setView(initialCenter, destination ? 14 : 12);
+
+    const tiles = L.tileLayer(
+        "https://maps.geoapify.com/v1/tile/osm-carto/{z}/{x}/{y}.png?apiKey={apiKey}",
+        {
+            apiKey,
+            maxZoom: 20,
+            attribution: 'Powered by <a href="https://www.geoapify.com/" target="_blank" rel="noopener">Geoapify</a> | <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors</a>'
+        }
+    ).addTo(map);
+
+    let providerMarker = null;
+    let firstLocation = true;
+    let requestInProgress = false;
+    let refreshTimer = null;
+    let tileErrorShown = false;
+
+    tiles.on("tileerror", () => {
+        if (tileErrorShown) return;
+        tileErrorShown = true;
+        mapLoadStatus.textContent =
+            "Geoapify map tiles could not load. Check the API key, map tile access, and account limits.";
+    });
+    tiles.on("tileload", () => {
+        tileErrorShown = false;
+        mapLoadStatus.textContent = "";
+    });
+
+    if (destination) {
+        L.marker(destination)
+            .addTo(map)
+            .bindPopup("Your delivery address");
+    }
+
+    function updateStatusMessage(data, hasLocation) {
+        if (data.status === "delivered") {
+            locationStatus.textContent = "Your delivery is complete.";
+        } else if (data.status === "accepted" || data.status === "out_for_delivery") {
+            locationStatus.textContent = hasLocation
+                ? "Provider location is live. Updated " +
+                    (data.location_updated
+                        ? new Date(data.location_updated).toLocaleTimeString()
+                        : "just now") + "."
+                : "The provider accepted your request. Waiting for a fresh GPS location...";
+        } else if (data.status === "assigned") {
+            locationStatus.textContent = "Your provider has been assigned. Live tracking begins when they accept.";
+        } else if (data.status === "rejected") {
+            locationStatus.textContent = "The provider could not take this request. We are finding another provider.";
+        } else {
+            locationStatus.textContent = "Waiting for a provider to accept your request.";
+        }
+    }
+
+    async function refreshTracking() {
+        if (requestInProgress) return;
+        requestInProgress = true;
+
+        try {
+            const response = await fetch(dataUrl, {
+                headers: {"X-Requested-With": "XMLHttpRequest"},
+                cache: "no-store"
+            });
+            if (!response.ok) throw new Error("Could not load tracking data");
+
+            const data = await response.json();
+            document.getElementById("job-status").textContent =
+                data.status_display || data.status.replaceAll("_", " ");
+            const hasLocation = data.provider_latitude !== null &&
+                data.provider_longitude !== null;
+            updateStatusMessage(data, hasLocation);
+
+            if (data.status === "delivered" && refreshTimer !== null) {
+                clearInterval(refreshTimer);
+            }
+
+            if (hasLocation) {
+                const point = [data.provider_latitude, data.provider_longitude];
+                if (!providerMarker) {
+                    providerMarker = L.marker(point)
+                        .addTo(map)
+                        .bindPopup("Your FuelFix provider");
+                } else {
+                    providerMarker.setLatLng(point);
+                }
+
+                if (firstLocation) {
+                    const points = destination ? [destination, point] : [point];
+                    map.fitBounds(L.latLngBounds(points), {padding: [40, 40], maxZoom: 15});
+                    providerMarker.openPopup();
+                    firstLocation = false;
+                }
+            } else if (providerMarker) {
+                map.removeLayer(providerMarker);
+                providerMarker = null;
+                firstLocation = true;
+            }
+        } catch (error) {
+            locationStatus.textContent =
+                "Tracking is temporarily unavailable. Retrying...";
+        } finally {
+            requestInProgress = false;
+        }
+    }
+
+    refreshTracking();
+    refreshTimer = setInterval(refreshTracking, 3000);
+})();
+</script>
+{% endif %}
+{% endblock %}

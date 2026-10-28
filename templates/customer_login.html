@@ -1,0 +1,195 @@
+
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}FuelFix | Customer Login{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/customer_login.css' %}">
+{% endblock %}
+
+{% block content %}
+<section
+    class="auth-wrap"
+    id="customer-login"
+    data-send-url="{% url 'send_otp' %}"
+    data-verify-url="{% url 'verify_otp' %}"
+    data-dashboard-url="{% url 'dashboard' %}"
+>
+    <!-- Animated background -->
+    <div class="auth-bg" aria-hidden="true">
+        <span class="glow glow-one"></span>
+        <span class="glow glow-two"></span>
+        <span class="glow glow-three"></span>
+        <span class="grid-overlay"></span>
+    </div>
+
+    <div class="auth-layout">
+
+        <!-- Branding panel -->
+        <aside class="auth-intro">
+            <div class="brand-mark">⛽</div>
+
+            <p class="eyebrow">
+                <span class="status-dot"></span>
+                ROADSIDE HELP, REIMAGINED
+            </p>
+
+            <h1>
+                Your journey.<br>
+                <span>Our priority.</span>
+            </h1>
+
+            <p class="intro-text">
+                Out of fuel or facing a breakdown?
+                Get the roadside assistance you need with FuelFix.
+            </p>
+
+            <div class="intro-points">
+                <div class="intro-point">
+                    <span class="point-icon">⚡</span>
+                    <div>
+                        <strong>Quick assistance</strong>
+                        <small>Request help when you need it</small>
+                    </div>
+                </div>
+
+                <div class="intro-point">
+                    <span class="point-icon">🛡️</span>
+                    <div>
+                        <strong>Secure sign-in</strong>
+                        <small>Verify your mobile number with OTP</small>
+                    </div>
+                </div>
+
+                <div class="intro-point">
+                    <span class="point-icon">📍</span>
+                    <div>
+                        <strong>Roadside support</strong>
+                        <small>Fuel delivery and mechanic services</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="intro-orbit" aria-hidden="true">
+                <span class="orbit orbit-a"></span>
+                <span class="orbit orbit-b"></span>
+                <span class="orbit-core">FF</span>
+                <span class="orbit-satellite satellite-a">⚡</span>
+                <span class="orbit-satellite satellite-b">📍</span>
+            </div>
+        </aside>
+
+        <!-- Login card -->
+        <div class="auth-card">
+            <div class="card-top">
+                <span class="secure-badge">
+                    <span>🔒</span> SECURE ACCESS
+                </span>
+                <span class="live-indicator">
+                    <span></span> ONLINE
+                </span>
+            </div>
+
+            <div class="card-heading">
+                <p class="welcome-text">WELCOME TO FUELFIX</p>
+                <h2>Customer Login</h2>
+                <p class="card-description">
+                    Sign in with your mobile number to get started.
+                </p>
+            </div>
+
+            <form id="csrf-form">
+                {% csrf_token %}
+            </form>
+
+            <div class="form-field">
+                <label for="phone">Mobile number</label>
+
+                <div class="input-shell">
+                    <span class="input-icon" aria-hidden="true">📱</span>
+                    <span class="country-code">+91</span>
+
+                    <input
+                        id="phone"
+                        type="tel"
+                        inputmode="numeric"
+                        maxlength="10"
+                        placeholder="Enter 10-digit number"
+                        autocomplete="tel-national"
+                        aria-describedby="message"
+                        required
+                    >
+                </div>
+
+                <small class="field-hint">
+                    We'll send a verification code to your phone.
+                </small>
+            </div>
+
+            <button id="send-btn" class="action-btn" type="button">
+                <span class="btn-text">Send OTP</span>
+                <span class="btn-arrow" aria-hidden="true">→</span>
+                <span class="btn-shimmer" aria-hidden="true"></span>
+            </button>
+
+            <div id="otp-area" hidden>
+                <div class="otp-divider">
+                    <span></span>
+                    <small>PHONE VERIFICATION</small>
+                    <span></span>
+                </div>
+
+                <div class="form-field">
+                    <label for="otp">6-digit verification code</label>
+
+                    <div class="input-shell otp-shell">
+                        <span class="input-icon" aria-hidden="true">🔐</span>
+                        <input
+                            id="otp"
+                            type="text"
+                            inputmode="numeric"
+                            maxlength="6"
+                            placeholder="Enter your OTP"
+                            autocomplete="one-time-code"
+                            aria-describedby="message"
+                        >
+                    </div>
+                </div>
+
+                <button id="verify-btn" class="action-btn verify-btn" type="button">
+                    <span class="btn-text">Verify OTP &amp; Login</span>
+                    <span class="btn-arrow" aria-hidden="true">→</span>
+                    <span class="btn-shimmer" aria-hidden="true"></span>
+                </button>
+            </div>
+
+            <p id="message" class="auth-message" role="status" aria-live="polite"></p>
+
+            <div class="card-separator">
+                <span></span>
+                <small>OR CONTINUE WITH</small>
+                <span></span>
+            </div>
+
+            <a href="{% url 'google_login' %}" class="google-btn">
+                <span class="google-symbol" aria-hidden="true">G</span>
+                <span>Continue with Google</span>
+            </a>
+
+            <p class="privacy-note">
+                🔐 Your sign-in details are protected by secure verification.
+            </p>
+        </div>
+
+    </div>
+
+    <div class="bottom-note">
+        <span>⛽</span> FuelFix · Reliable help for every journey
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/customer_login.js' %}" defer></script>
+{% endblock %}

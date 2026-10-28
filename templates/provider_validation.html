@@ -1,0 +1,140 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FuelFix | Provider Verification</title>
+    <script>
+        try {
+            const savedTheme = localStorage.getItem("fuelfix-theme");
+            if (savedTheme === "light" || savedTheme === "dark") {
+                document.documentElement.dataset.theme = savedTheme;
+            }
+        } catch (error) {
+            // Theme still works for this page if browser storage is unavailable.
+        }
+    </script>
+
+    <link rel="stylesheet"
+          href="{% static 'css/provider_validation.css' %}">
+    <link rel="stylesheet" href="{% static 'css/theme.css' %}">
+</head>
+<body>
+<button class="theme-toggle theme-toggle-floating" type="button" data-theme-toggle
+        aria-label="Switch to dark theme" aria-pressed="false" title="Switch to dark theme">
+    <span class="theme-toggle-icon" aria-hidden="true">☾</span>
+    <span class="theme-toggle-label">Dark</span>
+</button>
+
+<main class="validation-page">
+    <section class="validation-card">
+
+        <a href="/" class="brand">
+            <span class="brand-icon">F</span>
+            <span>Fuel<span class="brand-highlight">Fix</span></span>
+        </a>
+
+        <div class="status-icon {{ verification_status }}"
+             id="statusIcon">
+            {% if verification_status == "approved" %}
+                <span aria-hidden="true">✓</span>
+            {% elif verification_status == "pending" %}
+                <span aria-hidden="true">⌛</span>
+            {% elif verification_status == "rejected" %}
+                <span aria-hidden="true">!</span>
+            {% else %}
+                <span aria-hidden="true">↗</span>
+            {% endif %}
+        </div>
+
+        <p class="eyebrow">PROVIDER ACCOUNT VERIFICATION</p>
+
+        {% if verification_status == "approved" %}
+            <h1>You're <span>verified!</span></h1>
+            <p class="description">
+                Your account is authenticated and approved.
+                You can now access your provider dashboard.
+            </p>
+
+        {% elif verification_status == "pending" %}
+            <h1>Approval <span>pending</span></h1>
+            <p class="description">
+                Your account is authenticated, but the FuelFix admin
+                has not approved your provider registration yet.
+            </p>
+
+        {% elif verification_status == "rejected" %}
+            <h1>Approval <span>declined</span></h1>
+            <p class="description">
+                Your provider registration has not been approved.
+                Please contact FuelFix support for assistance.
+            </p>
+
+        {% elif verification_status == "inactive" %}
+            <h1>Account <span>inactive</span></h1>
+            <p class="description">
+                Your account is currently inactive. Please contact
+                FuelFix support for assistance.
+            </p>
+
+        {% else %}
+            <h1>Verification <span>required</span></h1>
+            <p class="description">
+                Please sign in to verify your account and continue.
+            </p>
+        {% endif %}
+
+        <div class="status-panel" role="status" aria-live="polite">
+            <div class="status-row">
+                <span>Authentication</span>
+                <strong>
+                    {% if is_authenticated %}
+                        Verified
+                    {% else %}
+                        Not signed in
+                    {% endif %}
+                </strong>
+            </div>
+
+            <div class="status-row">
+                <span>Provider approval</span>
+                <strong>{{ approval_label }}</strong>
+            </div>
+
+            <div class="status-row">
+                <span>Account access</span>
+                <strong>{{ access_label }}</strong>
+            </div>
+        </div>
+
+        {% if verification_status == "approved" %}
+            <a class="primary-btn" href="{% url 'provider_dashboard' %}">
+                Open Dashboard <span aria-hidden="true">→</span>
+            </a>
+
+        {% elif not is_authenticated %}
+            <a class="primary-btn" href="{% url 'provider_auth' %}">
+                Sign In <span aria-hidden="true">→</span>
+            </a>
+
+        {% elif verification_status == "pending" or verification_status == "rejected" or verification_status == "inactive" %}
+            <a class="secondary-btn" href="{% url 'provider_auth' %}">
+                Return to Login
+            </a>
+        {% endif %}
+
+        <p class="security-note">
+            <span aria-hidden="true">🔒</span>
+            Account status is checked securely by the FuelFix server.
+        </p>
+
+        <p class="copyright">© 2026 FuelFix</p>
+    </section>
+</main>
+
+<script src="{% static 'js/theme.js' %}" defer></script>
+<script src="{% static 'js/provider_validation.js' %}" defer></script>
+</body>
+</html>

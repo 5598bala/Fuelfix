@@ -1,0 +1,361 @@
+
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}FuelFix | Customer Dashboard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet"
+      href="{% static 'css/customer_dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-shell" id="dashboardShell">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <a href="{% url 'home' %}" class="brand">
+            <span class="brand-icon">⛽</span>
+            <span>Fuel<span class="brand-accent">Fix</span></span>
+        </a>
+
+        <div class="sidebar-label">MAIN MENU</div>
+
+        <nav class="sidebar-nav">
+            <a href="{% url 'dashboard' %}"
+               class="nav-item active">
+                <span>▦</span> Dashboard
+            </a>
+
+            <a href="{% url 'fuel_request' %}" class="nav-item">
+                <span>⛽</span> Request Fuel
+            </a>
+
+            <a href="#mechanic" class="nav-item">
+                <span>🔧</span> Mechanic Assistance
+            </a>
+
+            <a href="#myRequests" class="nav-item">
+                <span>◷</span> My Requests
+            </a>
+
+            <a href="#profile" class="nav-item">
+                <span>♙</span> My Profile
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="help-card">
+                <div class="help-icon">✦</div>
+                <strong>Need some help?</strong>
+                <p>We're here to help you get back on the road.</p>
+                <a href="#support">Contact Support →</a>
+            </div>
+
+            <form method="post" action="{% url 'customer_logout' %}">
+                {% csrf_token %}
+                <button class="logout-button" type="submit">
+                    <span>↪</span> Sign out
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="dashboard-main">
+
+        <header class="topbar">
+            <button class="menu-toggle" id="menuToggle"
+                    type="button" aria-label="Toggle navigation">
+                ☰
+            </button>
+
+            <div class="breadcrumb">
+                <span>Workspace</span>
+                <span>/</span>
+                <strong>Dashboard</strong>
+            </div>
+
+            <div class="topbar-right">
+                <div class="status-pill">
+                    <span class="status-dot"></span> Account active
+                </div>
+
+                <div class="avatar small-avatar">
+                    {{ request.user.first_name|default:request.user.username|slice:":1"|upper }}
+                </div>
+            </div>
+        </header>
+
+        <section class="welcome-section reveal">
+            <div class="welcome-copy">
+                <div class="eyebrow">
+                    <span class="eyebrow-line"></span>
+                    YOUR PERSONAL DASHBOARD
+                </div>
+
+                <h1>
+                    Welcome back,<br>
+                    <span class="gradient-text">
+                        {{ request.user.first_name|default:request.user.username }}
+                    </span>
+                    <span class="wave">👋</span>
+                </h1>
+
+                <p>
+                    Your journey matters. Get fuel, find assistance,
+                    and manage your service requests in one place.
+                </p>
+
+                <div class="welcome-actions">
+                    <a href="{% url 'fuel_request' %}" class="btn btn-primary">
+                        ⛽ Request Fuel <span>→</span>
+                    </a>
+
+                    <a href="#myRequests" class="btn btn-outline">
+                        View My Requests
+                    </a>
+                </div>
+            </div>
+
+            <div class="welcome-art" aria-hidden="true">
+                <div class="orbit orbit-one"></div>
+                <div class="orbit orbit-two"></div>
+                <div class="art-glow"></div>
+                <div class="floating-particle particle-one">✦</div>
+                <div class="floating-particle particle-two">+</div>
+                <div class="floating-particle particle-three">✧</div>
+
+                <div class="fuel-illustration">
+                    <div class="fuel-cap"></div>
+                    <div class="fuel-body">
+                        <div class="fuel-window">
+                            <span>F</span>
+                        </div>
+                        <div class="fuel-wave"></div>
+                    </div>
+                    <div class="fuel-base"></div>
+                    <div class="fuel-hose"></div>
+                </div>
+
+                <div class="floating-tag">
+                    <span class="tag-check">✓</span>
+                    <span>
+                        <strong>We're ready</strong>
+                        <small>Help is one click away</small>
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Account summary -->
+        <section class="stats-grid reveal">
+            <article class="stat-card">
+                <div class="stat-top">
+                    <span class="stat-icon cyan">♧</span>
+                    <span class="stat-label">ACCOUNT</span>
+                </div>
+                <h2>Verified session</h2>
+                <p>You're signed in to FuelFix.</p>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-top">
+                    <span class="stat-icon purple">⛽</span>
+                    <span class="stat-label">FUEL SERVICE</span>
+                </div>
+                <h2>Request anytime</h2>
+                <p>Submit a fuel assistance request.</p>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-top">
+                    <span class="stat-icon orange">🔧</span>
+                    <span class="stat-label">ROAD SUPPORT</span>
+                </div>
+                <h2>Mechanic help</h2>
+                <p>Find help for unexpected vehicle trouble.</p>
+            </article>
+        </section>
+
+        <!-- Service cards -->
+        <section class="section-block reveal" id="services">
+            <div class="section-heading">
+                <div>
+                    <div class="eyebrow">FAST & SIMPLE</div>
+                    <h2>What do you need today?</h2>
+                    <p>Choose a service to get started.</p>
+                </div>
+                <span class="heading-decoration">✦</span>
+            </div>
+
+            <div class="services-grid">
+                <article class="service-card fuel-service" id="fuelRequest">
+                    <div class="service-card-top">
+                        <div class="service-icon">⛽</div>
+                        <span class="service-number">01</span>
+                    </div>
+                    <h3>Emergency Fuel</h3>
+                    <p>
+                        Run out of fuel? Submit your location and
+                        fuel requirements to request assistance.
+                    </p>
+                    <a href="{% url 'fuel_request' %}"
+                       class="service-link">
+                        Request fuel <span>↗</span>
+                    </a>
+                    <div class="card-decoration"></div>
+                </article>
+
+                <article class="service-card mechanic-service" id="mechanic">
+                    <div class="service-card-top">
+                        <div class="service-icon">🔧</div>
+                        <span class="service-number">02</span>
+                    </div>
+                    <h3>Mechanic Assistance</h3>
+                    <p>
+                        Need help with a breakdown or vehicle issue?
+                        Find the right roadside support.
+                    </p>
+                    <a href="#support"
+                       class="service-link">
+                        Get assistance <span>↗</span>
+                    </a>
+                    <div class="card-decoration"></div>
+                </article>
+
+                <article class="service-card history-service" id="myRequests">
+                    <div class="service-card-top">
+                        <div class="service-icon">◷</div>
+                        <span class="service-number">03</span>
+                    </div>
+                    <h3>My Requests</h3>
+                    <p>
+                        Keep track of your service requests and
+                        check their latest status.
+                    </p>
+                    <a href="#requestHistory"
+                       class="service-link">
+                        View requests <span>↗</span>
+                    </a>
+                    <div class="card-decoration"></div>
+                </article>
+            </div>
+        </section>
+
+        <!-- Recent requests from the customer account -->
+        <section class="section-block reveal" id="requestHistory">
+            <div class="section-heading">
+                <div>
+                    <div class="eyebrow">YOUR ACTIVITY</div>
+                    <h2>Recent service requests</h2>
+                    <p>Review request status and open live tracking.</p>
+                </div>
+            </div>
+
+            {% if my_requests %}
+                <div class="request-history-list">
+                    {% for service_request in my_requests %}
+                        <article class="request-history-card">
+                            <div class="request-history-top">
+                                <div>
+                                    <span class="request-history-type">FUEL DELIVERY</span>
+                                    <h3>{{ service_request.fuel_type }} request <span>#{{ service_request.id }}</span></h3>
+                                    <p class="request-history-date">Submitted {{ service_request.created_at|date:"M j, Y · g:i A" }}</p>
+                                </div>
+                                <span class="request-status status-{{ service_request.status }}">{{ service_request.get_status_display }}</span>
+                            </div>
+                            <div class="request-history-details">
+                                <p><strong>Quantity:</strong> {{ service_request.quantity }} L{% if service_request.vehicle %}<span class="request-detail-separator">·</span><strong>Vehicle:</strong> {{ service_request.vehicle }}{% endif %}</p>
+                                <p class="request-payment-line"><strong>Payment:</strong> {% if service_request.payment_method == "online" %}{% if service_request.payment_status == "paid" %}<span class="request-payment-paid">Paid · ₹{{ service_request.payment_amount|floatformat:2 }}</span>{% else %}<span class="request-payment-pending">Payment required</span>{% endif %}{% else %}Cash on delivery{% endif %}</p>
+                                <p><strong>Delivery location:</strong> {{ service_request.address|truncatechars:150 }}</p>
+                                <p><strong>Preferred:</strong> {{ service_request.preferred_date|date:"M j, Y" }} at {{ service_request.preferred_time|time:"g:i A" }}</p>
+                            </div>
+                            <div class="request-history-actions">
+                                <a class="request-track-link" href="{% url 'customer_tracking' service_request.tracking_token %}">Track request <span aria-hidden="true">→</span></a>
+                                {% if service_request.payment_method == "online" and service_request.payment_status != "paid" %}
+                                    <a class="request-pay-link" href="{% url 'fuel_payment_checkout' service_request.id %}">Complete payment</a>
+                                {% endif %}
+                                <a class="request-repeat-link" href="{% url 'fuel_request' %}">Request fuel again</a>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="history-panel">
+                    <div class="empty-history-icon">◷</div>
+                    <h3>No service requests yet</h3>
+                    <p>Your fuel requests and their latest statuses will appear here after you submit a request.</p>
+                    <a href="{% url 'fuel_request' %}" class="btn btn-primary">Request fuel →</a>
+                </div>
+            {% endif %}
+        </section>
+
+        <!-- Profile -->
+        <section class="section-block reveal" id="profile">
+            <div class="section-heading">
+                <div>
+                    <div class="eyebrow">YOUR ACCOUNT</div>
+                    <h2>Profile information</h2>
+                </div>
+            </div>
+
+            <div class="profile-panel">
+                <div class="avatar profile-avatar">
+                    {{ profile_values.first_name|default:request.user.username|slice:":1"|upper }}
+                </div>
+
+                <div class="profile-editor">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="profile-message {{ message.tags }}" role="status">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                    <form method="post" class="profile-edit-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="profile_action" value="save">
+                        <div class="profile-form-grid">
+                            <label class="profile-field">First name
+                                <input name="first_name" value="{{ profile_values.first_name }}" autocomplete="given-name" maxlength="150" required>
+                            </label>
+                            <label class="profile-field">Last name
+                                <input name="last_name" value="{{ profile_values.last_name }}" autocomplete="family-name" maxlength="150">
+                            </label>
+                            <label class="profile-field">Email address
+                                <input type="email" name="email" value="{{ profile_values.email }}" autocomplete="email" maxlength="254">
+                            </label>
+                            <label class="profile-field">Mobile number
+                                <input type="tel" value="{{ profile_values.phone }}" readonly aria-describedby="profilePhoneNote">
+                                <small id="profilePhoneNote" class="profile-phone-note">Used to sign in. Contact support if it needs changing.</small>
+                            </label>
+                            <label class="profile-field profile-field-wide">Address
+                                <textarea name="address" rows="3" maxlength="2000" autocomplete="street-address">{{ profile_values.address }}</textarea>
+                            </label>
+                        </div>
+                        <div class="profile-form-actions">
+                            <button type="submit" class="profile-save-button">Save profile</button>
+                        </div>
+                    </form>
+                    <form method="post" action="{% url 'customer_logout' %}" class="profile-signout-form">
+                        {% csrf_token %}
+                        <button type="submit" class="profile-signout-button">↪ Sign out</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <footer class="dashboard-footer" id="support">
+            <span>© {% now "Y" %} FuelFix</span>
+            <span>Driving towards a smoother journey. <b>✦</b></span>
+        </footer>
+
+    </main>
+</div>
+
+<div class="toast" id="dashboardToast" role="status"
+     aria-live="polite"></div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/customer_dashboard.js' %}" defer></script>
+{% endblock %}

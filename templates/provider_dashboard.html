@@ -1,0 +1,552 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FuelFix | Provider Dashboard</title>
+    <script>
+        try {
+            const savedTheme = localStorage.getItem("fuelfix-theme");
+            if (savedTheme === "light" || savedTheme === "dark") {
+                document.documentElement.dataset.theme = savedTheme;
+            }
+        } catch (error) {
+            // Theme still works for this page if browser storage is unavailable.
+        }
+    </script>
+
+    <link rel="stylesheet" href="{% static 'css/provider_dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/theme.css' %}">
+    <script src="{% static 'js/theme.js' %}" defer></script>
+    <script src="{% static 'js/provider_dashboard.js' %}" defer></script>
+</head>
+<body>
+    {% if provider.status == "approved" %}
+        <section class="panel provider-location-panel"
+                 id="provider-location-sharing"
+                 data-active-delivery="{{ has_active_delivery|yesno:'true,false' }}"
+                 data-is-online="{{ provider.is_online|yesno:'true,false' }}"
+                 data-location-url="{% url 'provider_update_location' %}"
+                 data-availability-url="{% url 'provider_set_online' %}">
+            <div hidden>{% csrf_token %}</div>
+            <h2>Availability and live tracking</h2>
+            <p id="gps-message" role="status" aria-live="polite">
+                {% if has_active_delivery %}
+                    Your active delivery needs location sharing. Allow GPS access when your browser asks.
+                {% elif provider.is_online %}
+                    You are online. Allow GPS access to share your location.
+                {% else %}
+                    Accept a job to start delivery tracking, or go online to share your location.
+                {% endif %}
+            </p>
+            <button type="button" id="online-button">
+                {% if provider.is_online %}Go Offline{% else %}Go Online{% endif %}
+            </button>
+            <button type="button" id="location-retry" hidden>Retry location sharing</button>
+        </section>
+    {% else %}
+        <section class="panel provider-location-panel" role="status" aria-live="polite">
+            <h2>Provider approval</h2>
+            {% if provider.status == "rejected" %}
+                <p>Your registration was not approved. Contact FuelFix support for help.</p>
+            {% else %}
+                <p>Your account is saved. The dashboard is available now; job and live-location features unlock after admin approval.</p>
+            {% endif %}
+        </section>
+    {% endif %}
+
+<div class="dashboard">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <a href="/" class="brand">
+            <span class="brand-icon">F</span>
+            Fuel<span>Fix</span>
+        </a>
+
+        <div class="user-card">
+            <div class="avatar">
+                {{ request.user.username|first|upper }}
+            </div>
+            <div>
+                <strong>{{ request.user.get_full_name|default:request.user.username }}</strong>
+                <small>Provider Account</small>
+            </div>
+        </div>
+
+        <p class="nav-title">WORKSPACE</p>
+
+        <nav>
+            <a href="{% url 'provider_dashboard' %}" class="nav-link active">
+                <span>▦</span> Dashboard
+            </a>
+            <a href="#requests" class="nav-link">
+                <span>⇄</span> Fuel Requests
+            </a>
+            <a href="#performance" class="nav-link">
+                <span>↗</span> Performance
+            </a>
+            <a href="#profile" class="nav-link">
+                <span>♙</span> My Profile
+            </a>
+            <a href="{% url 'provider_validate' %}" class="nav-link">
+                <span>✓</span> Verification
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="help-card">
+                <span>✦</span>
+                <strong>Welcome to FuelFix!</strong>
+                <p>Manage your provider activity from one place.</p>
+            </div>
+
+                        <form class="sidebar-logout-form" method="post" action="{% url 'provider_logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="nav-link logout">
+                    <span>↪</span> Sign Out
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="main-content">
+
+        <header class="topbar">
+            <button id="menuToggle" class="menu-button"
+                    aria-label="Toggle navigation">☰</button>
+
+            <div class="breadcrumb">
+                Workspace <span>/</span> <strong>Dashboard</strong>
+            </div>
+
+            <div class="top-actions">
+                <span class="online-badge">
+                    <i></i> SYSTEM ONLINE
+                </span>
+
+                <button id="notificationButton" class="notification-button"
+                        aria-label="Notifications">♧</button>
+                <button class="theme-toggle" type="button" data-theme-toggle
+                        aria-label="Switch to dark theme" aria-pressed="false" title="Switch to dark theme">
+                    <span class="theme-toggle-icon" aria-hidden="true">☾</span>
+                    <span class="theme-toggle-label">Dark</span>
+                </button>
+
+                <div class="top-avatar">
+                    {{ request.user.username|first|upper }}
+                </div>
+            </div>
+        </header>
+
+        <div class="content">
+
+            <!-- Welcome -->
+            <section class="welcome reveal">
+                <div>
+                    <p class="eyebrow">PROVIDER CONTROL CENTER</p>
+                    <h1>
+                        Welcome back,
+                        <span>{{ request.user.first_name|default:request.user.username }}</span>
+                        <b class="sparkle">✦</b>
+                    </h1>
+                    <p class="subtitle">
+                        Here's what's happening in your FuelFix workspace.
+                    </p>
+                </div>
+
+                <div class="date-card">
+                    <span>◷</span>
+                    <div>
+                        <small>TODAY</small>
+                        <strong id="currentDate">Loading...</strong>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Account status -->
+            <section class="welcome-banner reveal">
+                <div class="success-icon">{% if provider.status == "approved" %}✓{% else %}⌛{% endif %}</div>
+                <div>
+                    {% if provider.status == "approved" %}
+                        <strong>Your workspace is ready</strong>
+                        <p>Manage your activity and keep your provider details updated.</p>
+                    {% elif provider.status == "rejected" %}
+                        <strong>Provider approval declined</strong>
+                        <p>Your account is saved. Contact FuelFix support for next steps.</p>
+                    {% else %}
+                        <strong>Registration complete — approval pending</strong>
+                        <p>Your account is saved. Job assignments become available after admin approval.</p>
+                    {% endif %}
+                </div>
+                <span class="preview-badge">{% if provider.status == "approved" %}DASHBOARD{% else %}{{ provider.get_status_display|upper }}{% endif %}</span>
+            </section>
+
+            <!-- Statistics -->
+            <section class="section-heading reveal">
+                <div>
+                    <h2>Dashboard Overview</h2>
+                    <p>Your business activity at a glance</p>
+                </div>
+                <span class="sample-label">Sample data</span>
+            </section>
+
+            <section class="stats-grid">
+
+                <article class="stat-card blue reveal">
+                    <div class="stat-header">
+                        <span class="stat-icon">⇄</span>
+                        <span class="stat-label-top">REQUESTS</span>
+                    </div>
+                    <p>Total Requests</p>
+                    <h2 data-count="0">0</h2>
+                    <small>All service requests</small>
+                    <div class="card-glow"></div>
+                </article>
+
+                <article class="stat-card green reveal">
+                    <div class="stat-header">
+                        <span class="stat-icon">✓</span>
+                        <span class="stat-label-top">COMPLETED</span>
+                    </div>
+                    <p>Completed Jobs</p>
+                    <h2 data-count="0">0</h2>
+                    <small>Successfully completed</small>
+                    <div class="card-glow"></div>
+                </article>
+
+                <article class="stat-card purple reveal">
+                    <div class="stat-header">
+                        <span class="stat-icon">◷</span>
+                        <span class="stat-label-top">PENDING</span>
+                    </div>
+                    <p>Pending Requests</p>
+                    <h2 data-count="0">0</h2>
+                    <small>Awaiting action</small>
+                    <div class="card-glow"></div>
+                </article>
+
+                <article class="stat-card orange reveal">
+                    <div class="stat-header">
+                        <span class="stat-icon">₹</span>
+                        <span class="stat-label-top">EARNINGS</span>
+                    </div>
+                    <p>Total Earnings</p>
+                    <h2>₹<span data-count="0">0</span></h2>
+                    <small>Service earnings</small>
+                    <div class="card-glow"></div>
+                </article>
+
+            </section>
+
+            <!-- Activity chart -->
+            <section class="content-grid">
+
+                <article class="panel reveal" id="performance">
+                    <div class="panel-heading">
+                        <div>
+                            <h2>Activity Overview</h2>
+                            <p>Illustrative weekly activity</p>
+                        </div>
+                        <span class="chart-badge">7 DAYS</span>
+                    </div>
+
+                    <div class="chart-legend">
+                        <span><i></i> Request activity</span>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-labels">
+                            <span>40</span>
+                            <span>30</span>
+                            <span>20</span>
+                            <span>10</span>
+                            <span>0</span>
+                        </div>
+
+                        <div class="chart-area">
+                            <div class="chart-grid">
+                                <i></i><i></i><i></i><i></i><i></i>
+                            </div>
+
+                            <svg viewBox="0 0 700 220"
+                                 preserveAspectRatio="none"
+                                 aria-label="Illustrative activity chart">
+
+                                <defs>
+                                    <linearGradient id="chartGradient"
+                                                    x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="#25a8ff"
+                                              stop-opacity=".35"/>
+                                        <stop offset="100%" stop-color="#25a8ff"
+                                              stop-opacity="0"/>
+                                    </linearGradient>
+                                </defs>
+
+                                <path class="chart-fill"
+                                      d="M0 170 C50 155 60 110 115 128
+                                      S190 165 230 105 S300 125 350 88
+                                      S420 110 465 65 S535 105 580 48
+                                      S650 70 700 24 L700 220 L0 220 Z"/>
+
+                                <path class="chart-line"
+                                      d="M0 170 C50 155 60 110 115 128
+                                      S190 165 230 105 S300 125 350 88
+                                      S420 110 465 65 S535 105 580 48
+                                      S650 70 700 24"/>
+                            </svg>
+
+                            <div class="chart-days">
+                                <span>Mon</span><span>Tue</span>
+                                <span>Wed</span><span>Thu</span>
+                                <span>Fri</span><span>Sat</span>
+                                <span>Sun</span>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Quick actions -->
+                <article class="panel quick-panel reveal">
+                    <div class="panel-heading">
+                        <div>
+                            <h2>Quick Actions</h2>
+                            <p>Navigate your workspace</p>
+                        </div>
+                        <span class="sparkle">✧</span>
+                    </div>
+
+                    <a href="#requests" class="quick-action">
+                        <span class="quick-icon">⇄</span>
+                        <div>
+                            <strong>View Requests</strong>
+                            <small>Check your service activity</small>
+                        </div>
+                        <b>↗</b>
+                    </a>
+
+                    <a href="#profile" class="quick-action">
+                        <span class="quick-icon cyan-icon">♙</span>
+                        <div>
+                            <strong>My Profile</strong>
+                            <small>Review account details</small>
+                        </div>
+                        <b>↗</b>
+                    </a>
+
+                    <a href="{% url 'provider_validate' %}" class="quick-action">
+                        <span class="quick-icon purple-icon">✓</span>
+                        <div>
+                            <strong>Verification</strong>
+                            <small>Check approval status</small>
+                        </div>
+                        <b>↗</b>
+                    </a>
+
+                    <div class="tip-box">
+                        <strong>✦ Helpful tip</strong>
+                        <p>Keep your provider information up to date.</p>
+                    </div>
+                </article>
+
+            </section>
+
+            <!-- Assigned fuel requests -->
+            <section class="panel requests-panel reveal" id="requests">
+                <div class="panel-heading">
+                    <div>
+                        <h2>My Assigned Fuel Requests</h2>
+                        <p>Review each delivery and update its status as you go.</p>
+                    </div>
+                    <span class="requests-count">{{ jobs|length }} JOB{{ jobs|length|pluralize|upper }}</span>
+                </div>
+
+
+                {% if provider.status != "approved" %}
+                    <p class="request-notice">Your provider profile is {{ provider.get_status_display|lower }}. Assigned jobs will appear here after approval.</p>
+                {% endif %}
+
+                <div class="assigned-jobs">
+                    {% for job in jobs %}
+                        <article class="job-card request-card request-card--{{ job.status|slugify }}">
+                            <header class="request-card__header">
+                                <div>
+                                    <span class="request-kicker">FUEL DELIVERY</span>
+                                    <h3>Request #{{ job.id }}</h3>
+                                </div>
+                                <span class="request-status request-status--{{ job.status|slugify }}">
+                                    <i aria-hidden="true"></i>{{ job.get_status_display }}
+                                </span>
+                            </header>
+
+                            <div class="request-details">
+                                <div class="request-detail">
+                                    <span>Customer</span>
+                                    <strong>{{ job.customer_name }}</strong>
+                                </div>
+                                <div class="request-detail">
+                                    <span>Phone</span>
+                                    <a href="tel:{{ job.phone }}">{{ job.phone }}</a>
+                                </div>
+                                <div class="request-detail">
+                                    <span>Fuel type</span>
+                                    <strong>{{ job.fuel_type }}</strong>
+                                </div>
+                                <div class="request-detail">
+                                    <span>Quantity</span>
+                                    <strong>{{ job.quantity }} litres</strong>
+                                </div>
+                                <div class="request-detail request-detail--wide">
+                                    <span>Delivery address</span>
+                                    <p>{{ job.address }}</p>
+                                </div>
+                            </div>
+
+                            {% if job.status == "assigned" or job.status == "accepted" or job.status == "out_for_delivery" %}
+                                <footer class="request-card__footer">
+                                    <span class="request-next-step">
+                                        {% if job.status == "assigned" %}Choose whether to take this request.{% elif job.status == "accepted" %}Ready when you are. Start the delivery when you set off.{% else %}The delivery is underway. Mark it complete when fuel is delivered.{% endif %}
+                                    </span>
+                                    <div class="request-actions">
+                                        {% if job.status == "assigned" %}
+                                            <form class="request-action-form" method="post" action="{% url 'update_fuel_job' job.id 'accept' %}">
+                                                {% csrf_token %}
+                                                <button class="request-action request-action--accept" type="submit"><span aria-hidden="true">✓</span> Accept Job</button>
+                                            </form>
+                                            <form class="request-action-form" method="post" action="{% url 'update_fuel_job' job.id 'reject' %}">
+                                                {% csrf_token %}
+                                                <button class="request-action request-action--reject" type="submit"><span aria-hidden="true">×</span> Reject</button>
+                                            </form>
+                                        {% elif job.status == "accepted" %}
+                                            <form class="request-action-form" method="post" action="{% url 'update_fuel_job' job.id 'dispatch' %}">
+                                                {% csrf_token %}
+                                                <button class="request-action request-action--dispatch" type="submit"><span aria-hidden="true">➜</span> Start Delivery</button>
+                                            </form>
+                                        {% elif job.status == "out_for_delivery" %}
+                                            <form class="request-action-form" method="post" action="{% url 'update_fuel_job' job.id 'deliver' %}">
+                                                {% csrf_token %}
+                                                <button class="request-action request-action--delivered" type="submit"><span aria-hidden="true">✓</span> Mark as Delivered</button>
+                                            </form>
+                                        {% endif %}
+                                    </div>
+                                </footer>
+                            {% endif %}
+                        </article>
+                    {% empty %}
+                        <div class="empty-state">
+                            <div class="empty-icon">⇄</div>
+                            <strong>No assigned requests yet</strong>
+                            <p>New requests will appear here when assigned to you.</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+            <!-- Editable provider profile -->
+            <section class="panel profile-panel provider-profile-panel reveal" id="profile">
+                <div class="profile-cover">
+                    <span class="profile-cover-label">YOUR PROVIDER ACCOUNT</span>
+                    <span class="profile-cover-mark" aria-hidden="true">✦</span>
+                </div>
+
+                <div class="profile-overview">
+                    <div class="profile-avatar">{{ provider.full_name|first|upper }}</div>
+                    <div class="profile-overview-copy">
+                        <span class="profile-overview-label">PROFILE DETAILS</span>
+                        <h2>{{ provider.full_name }}</h2>
+                        <p>{{ request.user.email|default:"Email not added" }}</p>
+                    </div>
+                    <span class="profile-status-badge profile-status-badge--{{ provider.status }}">
+                        <i aria-hidden="true"></i>{{ provider.get_status_display }}
+                    </span>
+                </div>
+
+                {% if messages %}
+                    <div class="profile-feedback" role="status" aria-live="polite">
+                        {% for message in messages %}
+                            <p class="profile-feedback-message profile-feedback-message--{{ message.tags }}">{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="profile-editor-heading">
+                    <div>
+                        <h3>Edit your details</h3>
+                        <p>Keep your contact information and services up to date.</p>
+                    </div>
+                    <span class="profile-secure-note">🔒 Private account details</span>
+                </div>
+
+                {% if profile_errors %}
+                    <div class="profile-errors" role="alert">
+                        {% for error in profile_errors %}<p>{{ error }}</p>{% endfor %}
+                    </div>
+                {% endif %}
+
+                <form class="provider-profile-form" method="post" action="{% url 'provider_dashboard' %}#profile">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="update_profile">
+
+                    <div class="provider-profile-fields">
+                        <div class="profile-field">
+                            <label for="profileFullName">Full name</label>
+                            <input id="profileFullName" name="full_name" type="text" maxlength="120" autocomplete="name" value="{{ profile_values.full_name }}" required>
+                        </div>
+                        <div class="profile-field">
+                            <label for="profilePhone">Phone number</label>
+                            <input id="profilePhone" name="phone" type="tel" maxlength="10" minlength="10" pattern="[6-9][0-9]{9}" inputmode="numeric" autocomplete="tel" value="{{ profile_values.phone }}" required>
+                        </div>
+                        <div class="profile-field">
+                            <label for="profileEmail">Email address <span>Used to sign in</span></label>
+                            <input id="profileEmail" name="email" type="email" maxlength="150" autocomplete="email" value="{{ profile_values.email }}" required>
+                        </div>
+                        <div class="profile-field">
+                            <label for="profileServiceType">Service type</label>
+                            <select id="profileServiceType" name="service_type" required>
+                                <option value="fuel_delivery" {% if profile_values.service_type == "fuel_delivery" %}selected{% endif %}>Fuel delivery</option>
+                                <option value="mechanic" {% if profile_values.service_type == "mechanic" %}selected{% endif %}>Mechanic / roadside repair</option>
+                                <option value="both" {% if profile_values.service_type == "both" %}selected{% endif %}>Fuel delivery and mechanic</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="profile-form-footer">
+                        <p>Your updated email becomes your sign-in email.</p>
+                        <button class="profile-save-button" type="submit"><span aria-hidden="true">✓</span> Save Profile</button>
+                    </div>
+                </form>
+                <div class="profile-signout-row">
+                    <div>
+                        <h3>Sign out</h3>
+                        <p>End this provider dashboard session securely.</p>
+                    </div>
+                    <form method="post" action="{% url 'provider_logout' %}">
+                        {% csrf_token %}
+                        <button class="profile-signout-button" type="submit"><span aria-hidden="true">↪</span> Sign Out</button>
+                    </form>
+                </div>
+            </section>
+            <footer class="footer">
+                <span>© 2026 FuelFix</span>
+                <span>Built to keep you moving <b>✦</b></span>
+            </footer>
+
+        </div>
+    </main>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite">
+    <span>✦</span>
+    <p id="toastMessage">No new notifications.</p>
+    <button id="closeToast" aria-label="Close">×</button>
+</div>
+
+<div class="mobile-overlay" id="mobileOverlay"></div>
+
+<script src="{% static 'js/provider_tracking.js' %}" defer></script>
+
+
+</body>
+</html>

@@ -1,0 +1,205 @@
+
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}FuelFix | Features{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/features.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="features-hero">
+    <div class="hero-orb orb-one"></div>
+    <div class="hero-orb orb-two"></div>
+
+    <div class="features-hero-content reveal">
+        <span class="eyebrow">
+            <span class="live-dot"></span>
+            SMARTER ROADS. FASTER HELP.
+        </span>
+
+        <h1>
+            Powerful Features.<br>
+            <span>Stress-Free Driving.</span>
+        </h1>
+
+        <p>
+            Your journey deserves reliable support. Discover how
+            FuelFix makes fuel delivery, vehicle assistance, and
+            roadside support simpler than ever.
+        </p>
+
+        <a href="#feature-grid" class="features-btn">
+            Explore Features
+            <span>↗</span>
+        </a>
+
+        <div class="hero-stats">
+            <div>
+                <strong>24/7</strong>
+                <small>Roadside Support</small>
+            </div>
+            <div>
+                <strong>Smart</strong>
+                <small>Service Experience</small>
+            </div>
+            <div>
+                <strong>Easy</strong>
+                <small>Online Requests</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="hero-visual reveal">
+        <div class="visual-ring ring-one"></div>
+        <div class="visual-ring ring-two"></div>
+
+        <div class="floating-badge badge-top">
+            <span class="badge-icon">⚡</span>
+            <div>
+                <strong>Quick Assistance</strong>
+                <small>Help when you need it</small>
+            </div>
+        </div>
+
+        <div class="car-display">
+            <div class="car-glow"></div>
+            <div class="car-icon">🚘</div>
+            <div class="road-line"></div>
+        </div>
+
+        <div class="floating-badge badge-bottom">
+            <span class="badge-icon">✓</span>
+            <div>
+                <strong>Reliable Support</strong>
+                <small>Made for your journey</small>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="features-section" id="feature-grid">
+    <div class="section-heading reveal">
+        <span class="section-label">WHY CHOOSE FUELFIX?</span>
+        <h2>Everything You Need,<br><span>All in One Place.</span></h2>
+        <p>Smart solutions designed to keep you moving.</p>
+    </div>
+
+    <div class="features-grid">
+
+        <article class="feature-card reveal">
+            <div class="card-top">
+                <div class="feature-icon icon-blue">⛽</div>
+                <span class="card-number">01</span>
+            </div>
+            <h3>Emergency Fuel Delivery</h3>
+            <p>
+                Request fuel assistance when your vehicle runs low.
+                Get help without searching for a nearby petrol station.
+            </p>
+         ]<a href="/" class="feature-link">
+                Request Fuel <span>→</span>
+                </a>
+            <div class="card-shine"></div>
+        </article>
+
+        <article class="feature-card reveal">
+            <div class="card-top">
+                <div class="feature-icon icon-cyan">🔧</div>
+                <span class="card-number">02</span>
+            </div>
+            <h3>Mechanic Assistance</h3>
+            <p>
+                Get support for unexpected vehicle trouble and
+                connect with mechanic assistance when needed.
+            </p>
+          <a href="{% url 'contact' %}" class="feature-link">
+    Get Assistance <span>→</span>
+</a>
+            <div class="card-shine"></div>
+        </article>
+
+        <article class="feature-card reveal">
+            <div class="card-top">
+                <div class="feature-icon icon-purple">📍</div>
+                <span class="card-number">03</span>
+            </div>
+            <h3>Location-Based Support</h3>
+            <p>
+                Share your location details with your service request
+                to help coordinate roadside assistance.
+            </p>
+           <a href="{% url 'contact' %}" class="feature-link">
+    Start a Request <span>→</span>
+</a>
+            <div class="card-shine"></div>
+        </article>
+
+        <article class="feature-card reveal">
+            <div class="card-top">
+                <div class="feature-icon icon-orange">🛡️</div>
+                <span class="card-number">04</span>
+            </div>
+            <h3>Customer-Friendly Service</h3>
+            <p>
+                Use a simple interface to explore services and
+                submit requests with less hassle.
+            </p>
+            <a href="{% url 'contact' %}" class="feature-link">
+                Contact Us <span>→</span>
+            </a>
+            <div class="card-shine"></div>
+        </article>
+
+        <article class="feature-card reveal">
+            <div class="card-top">
+                <div class="feature-icon icon-green">📱</div>
+                <span class="card-number">05</span>
+            </div>
+            <h3>Easy Online Access</h3>
+            <p>
+                Access the FuelFix website from your phone,
+                tablet, or computer with a responsive design.
+            </p>
+            <a href="{% url 'customer_login' %}" class="feature-link">
+                Get Started <span>→</span>
+            </a>
+            <div class="card-shine"></div>
+        </article>
+
+        <article class="feature-card reveal">
+            <div class="card-top">
+                <div class="feature-icon icon-pink">💬</div>
+                <span class="card-number">06</span>
+            </div>
+            <h3>Dedicated Customer Support</h3>
+            <p>
+                Reach out with questions or service concerns
+                through the available contact options.
+            </p>
+            <a href="{% url 'contact' %}" class="feature-link">
+                Talk to Us <span>→</span>
+            </a>
+            <div class="card-shine"></div>
+        </article>
+
+    </div>
+</section>
+
+<section class="features-cta reveal">
+    <div class="cta-orb"></div>
+    <span class="section-label">YOUR JOURNEY, OUR PRIORITY</span>
+    <h2>Ready to Experience<br><span>FuelFix?</span></h2>
+    <p>Explore our services and make your next journey easier.</p>
+    <a href="{% url 'customer_login' %}" class="features-btn cta-btn">
+        Get Started Now <span>↗</span>
+    </a>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/features.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,284 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Fuelfix – Spare Parts{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/spareparts.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- SPARE PARTS HERO -->
+<section class="parts-hero">
+    <div class="hero-container">
+
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="pulse"></span>
+                Genuine Vehicle Parts
+            </div>
+
+            <h1>
+                Quality Spare Parts
+                <span>When You Need Them.</span>
+            </h1>
+
+            <p>
+                Find reliable spare parts for cars and bikes.
+                Explore quality products at competitive prices
+                with Fuelfix.
+            </p>
+
+            <div class="hero-buttons">
+                <a href="#parts" class="primary-btn">
+                    Browse Spare Parts →
+                </a>
+                <a href="{% url 'contact' %}" class="secondary-btn">
+                    Contact Us
+                </a>
+            </div>
+        </div>
+
+        <div class="hero-visual">
+            <div class="glow"></div>
+
+            <div class="parts-card">
+                <div class="card-top">
+                    <span>FUELFIX</span>
+                    <span>VEHICLE CARE</span>
+                </div>
+
+                <div class="big-icon">🔧</div>
+
+                <h3>Vehicle Spare Parts</h3>
+                <p>Quality parts for your vehicle</p>
+
+                <div class="mini-parts">
+                    <div>🔋</div>
+                    <div>⚙️</div>
+                    <div>🛞</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="category-section">
+    <div class="container">
+
+        <div class="section-heading">
+            <span>EXPLORE CATEGORIES</span>
+            <h2>Find the Parts You Need</h2>
+            <p>
+                Explore spare parts for different vehicle
+                types and maintenance requirements.
+            </p>
+        </div>
+
+        <div class="categories">
+
+            <div class="category-card">
+                <div class="category-icon">🚗</div>
+                <h3>Car Parts</h3>
+                <p>Parts for four-wheelers</p>
+            </div>
+
+            <div class="category-card">
+                <div class="category-icon">🏍️</div>
+                <h3>Bike Parts</h3>
+                <p>Parts for two-wheelers</p>
+            </div>
+
+            <div class="category-card">
+                <div class="category-icon">🔋</div>
+                <h3>Batteries</h3>
+                <p>Vehicle battery products</p>
+            </div>
+
+            <div class="category-card">
+                <div class="category-icon">⚙️</div>
+                <h3>Engine Parts</h3>
+                <p>Engine and mechanical parts</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="products-section" id="parts">
+    <div class="container">
+
+        <div class="products-heading">
+            <div>
+                <span class="small-title">FUELFIX STORE</span>
+                <h2>Available Spare Parts</h2>
+            </div>
+
+            <div class="available">
+                <span></span>
+                Explore Products
+            </div>
+        </div>
+
+        {% if parts %}
+
+        <div class="product-grid">
+
+            {% for part in parts %}
+
+            <article class="product-card">
+
+                <div class="product-image">
+                    {% if part.image %}
+                        <img src="{{ part.image.url }}"
+                             alt="{{ part.name }}" loading="lazy">
+                    {% else %}
+                        <div class="no-image">🔧</div>
+                    {% endif %}
+
+                    {% if part.is_popular %}
+                        <span class="popular">Popular</span>
+                    {% endif %}
+                </div>
+
+                <div class="product-content">
+
+                    <div class="product-category">
+                        {{ part.category }}
+                    </div>
+
+                    <h3>{{ part.name }}</h3>
+
+                    <div class="vehicle">
+                        Vehicle: {{ part.vehicle_type }}
+                    </div>
+
+                    <div class="brand">
+                        Brand: <strong>{{ part.brand }}</strong>
+                    </div>
+
+                    <p>{{ part.description }}</p>
+
+                    <div class="product-bottom">
+                        <div class="price">
+                            <small>Price</small>
+                            ₹{{ part.price }}
+                        </div>
+
+                        <a href="{% url 'contact' %}" class="view-btn">
+                            Enquire
+                        </a>
+                    </div>
+
+                </div>
+            </article>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-state">
+            <div class="empty-icon">🔧</div>
+
+            <h3>Spare Parts Coming Soon</h3>
+
+            <p>
+                We are preparing our spare parts collection.
+                Contact us for assistance with your vehicle.
+            </p>
+
+            <a href="{% url 'contact' %}" class="primary-btn">
+                Contact Fuelfix
+            </a>
+        </div>
+
+        {% endif %}
+
+    </div>
+</section>
+
+<!-- WHY CHOOSE FUELFIX -->
+<section class="why-section">
+    <div class="container">
+
+        <div class="section-heading">
+            <span>WHY FUELFIX</span>
+            <h2>Reliable Vehicle Support</h2>
+            <p>
+                Make vehicle maintenance simpler with Fuelfix.
+            </p>
+        </div>
+
+        <div class="why-grid">
+
+            <div class="why-card">
+                <div class="why-icon">✓</div>
+                <h3>Quality Parts</h3>
+                <p>
+                    Find parts suitable for your vehicle's
+                    maintenance needs.
+                </p>
+            </div>
+
+            <div class="why-card">
+                <div class="why-icon">₹</div>
+                <h3>Competitive Pricing</h3>
+                <p>
+                    Explore products at competitive prices.
+                </p>
+            </div>
+
+            <div class="why-card">
+                <div class="why-icon">⚡</div>
+                <h3>Convenience</h3>
+                <p>
+                    Browse spare parts in one convenient place.
+                </p>
+            </div>
+
+            <div class="why-card">
+                <div class="why-icon">🛡️</div>
+                <h3>Customer Support</h3>
+                <p>
+                    Contact Fuelfix when you need help finding
+                    a suitable part.
+                </p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- CONTACT CTA -->
+<section class="cta-section">
+    <div class="cta-container">
+
+        <div>
+            <span>NEED ASSISTANCE?</span>
+            <h2>Looking for a Specific Spare Part?</h2>
+            <p>
+                Contact our team for assistance with your
+                vehicle requirements.
+            </p>
+        </div>
+
+        <div class="cta-buttons">
+            <a href="{% url 'contact' %}" class="cta-primary">
+                Contact Us →
+            </a>
+
+            <a href="{% url 'home' %}" class="cta-secondary">
+                Back to Home
+            </a>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

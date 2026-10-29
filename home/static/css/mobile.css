@@ -1,0 +1,209 @@
+/* Shared phone-first refinements for the public pages and provider dashboard. */
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+body {
+    min-width: 320px;
+}
+
+.fuelfix-mobile-wordmark,
+.nav-customer-short {
+    display: none;
+}
+
+img,
+video,
+iframe,
+canvas,
+svg {
+    max-width: 100%;
+}
+
+a,
+button,
+input,
+select,
+textarea {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+@supports (min-height: 100dvh) {
+    .auth-wrap,
+    .provider-auth-page,
+    .provider-validation-page {
+        min-height: 100dvh;
+    }
+}
+
+@media (max-width: 760px) {
+    .site-header .nav {
+        min-height: 68px;
+        gap: 8px;
+    }
+
+    .site-header .fuelfix-brand {
+        flex: 0 1 auto;
+        min-width: 0;
+    }
+
+    .site-header .nav-btns {
+        flex: 0 0 auto;
+        gap: 6px;
+    }
+
+    .site-header .nav-btns .theme-toggle {
+        width: 44px;
+        min-width: 44px;
+        height: 44px;
+        min-height: 44px;
+    }
+
+    .fuelfix-mobile-wordmark,
+    .nav-customer-short {
+        display: none;
+    }
+
+    .site-header .menu-toggle {
+        display: inline-flex;
+        width: 44px;
+        min-width: 44px;
+        height: 44px;
+        min-height: 44px;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        border: 1px solid rgba(255, 255, 255, .22);
+        border-radius: 12px;
+        color: #fff;
+        background: rgba(255, 255, 255, .08);
+        font-size: 20px;
+        line-height: 1;
+    }
+
+    .site-nav.open {
+        max-height: min(70svh, 460px);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        padding-bottom: max(18px, env(safe-area-inset-bottom));
+    }
+
+    .site-nav a {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+
+    .sos {
+        right: max(14px, env(safe-area-inset-right));
+        bottom: max(14px, env(safe-area-inset-bottom));
+        min-width: 54px;
+        min-height: 54px;
+    }
+
+    .sos-overlay {
+        padding-top: max(12px, env(safe-area-inset-top));
+        padding-bottom: max(12px, env(safe-area-inset-bottom));
+    }
+
+    .sos-panel {
+        max-height: calc(100dvh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+
+    input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]),
+    select,
+    textarea {
+        font-size: 16px;
+    }
+
+    button,
+    input[type="submit"],
+    .btn,
+    [role="button"] {
+        touch-action: manipulation;
+    }
+}
+
+@media (max-width: 520px) {
+    .site-header .nav {
+        width: calc(100% - 24px);
+    }
+
+    .site-header .nav-btns .btn-primary {
+        min-height: 44px;
+        padding-inline: 10px;
+        font-size: .76rem;
+    }
+
+    .tracking-map {
+        height: min(54svh, 420px);
+        min-height: 280px;
+    }
+
+    .provider-jobs-page,
+    .tracking-page {
+        width: calc(100% - 24px);
+    }
+}
+
+@media (max-width: 420px) {
+    .site-header .nav {
+        width: calc(100% - 20px);
+        gap: 4px;
+    }
+
+    .site-header .nav-btns {
+        gap: 4px;
+    }
+
+    .site-header .fuelfix-brand {
+        width: auto;
+        height: 44px;
+    }
+
+    .site-header .fuelfix-logo-crop {
+        display: none;
+    }
+
+    .site-header .fuelfix-mobile-wordmark {
+        display: inline-flex;
+        align-items: center;
+        white-space: nowrap;
+        color: #f7fbff;
+        font-size: 1.18rem;
+        font-weight: 800;
+        letter-spacing: -.055em;
+    }
+
+    .site-header .fuelfix-mobile-wordmark span {
+        color: #48d17a;
+    }
+
+    .site-header .nav-customer-full {
+        display: none;
+    }
+
+    .site-header .nav-customer-short {
+        display: inline;
+    }
+
+    .site-header .nav-btns .btn-primary {
+        padding-inline: 9px;
+        font-size: .74rem;
+    }
+}
+
+@media (pointer: coarse) {
+    .site-nav a,
+    .delivery-action,
+    .location-retry-button,
+    .request-action,
+    .action-btn,
+    .google-btn {
+        min-height: 44px;
+    }
+}

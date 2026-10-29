@@ -21,6 +21,7 @@ def _post(endpoint, payload, idempotency_key=None):
 
     headers = {
         "Authorization": f"Bearer {api_key}",
+        "Accept": "application/json",
         "Content-Type": "application/json",
     }
     if idempotency_key:

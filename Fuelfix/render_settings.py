@@ -98,3 +98,23 @@ if _google_client_id and _google_client_secret:
             ],
         },
     }
+
+
+# Send production 500 exceptions to Render logs while DEBUG stays off.
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "render_console_errors": {
+            "class": "logging.StreamHandler",
+            "level": "ERROR",
+        },
+    },
+    "loggers": {
+        "django.request": {
+            "handlers": ["render_console_errors"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+    },
+}

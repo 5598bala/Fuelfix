@@ -33,7 +33,7 @@
         map.setView(destination || [11.0168, 76.9558], destination ? 14 : 12);
 
         const tiles = L.tileLayer(
-            "https://maps.geoapify.com/v1/tile/osm-carto/{z}/{x}/{y}.png?apiKey={apiKey}",
+            `https://maps.geoapify.com/v1/tile/osm-carto/{z}/{x}/{y}.png?apiKey=${encodeURIComponent(apiKey)}`,
             {
                 apiKey,
                 maxZoom: 20,

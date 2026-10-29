@@ -41,6 +41,9 @@ if not SECRET_KEY:
 DEBUG = os.environ.get("DEBUG", "True").strip().lower() in {"1", "true", "yes", "on"}
 _allowed_hosts = os.environ.get("ALLOWED_HOSTS", "")
 ALLOWED_HOSTS = [host.strip() for host in _allowed_hosts.split(",") if host.strip()]
+RENDER_EXTERNAL_HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME", "").strip()
+if RENDER_EXTERNAL_HOSTNAME and RENDER_EXTERNAL_HOSTNAME not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 if DEBUG and not ALLOWED_HOSTS:
     ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 if not DEBUG and not ALLOWED_HOSTS:
@@ -48,6 +51,10 @@ if not DEBUG and not ALLOWED_HOSTS:
 
 _csrf_origins = os.environ.get("CSRF_TRUSTED_ORIGINS", "")
 CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in _csrf_origins.split(",") if origin.strip()]
+if RENDER_EXTERNAL_HOSTNAME:
+    render_origin = f"https://{RENDER_EXTERNAL_HOSTNAME}"
+    if render_origin not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(render_origin)
 
 
 # Application definition
@@ -76,6 +83,7 @@ SITE_ID = int(os.environ.get("SITE_ID", "1"))
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -110,12 +118,27 @@ WSGI_APPLICATION = 'Fuelfix.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+_database_url = os.environ.get("DATABASE_URL", "").strip()
+if _database_url:
+    import dj_database_url
+
+    DATABASES = {
+        "default": dj_database_url.parse(
+            _database_url,
+            conn_max_age=600,
+            conn_health_checks=True,
+            ssl_require=not DEBUG,
+        )
     }
-}
+elif os.environ.get("RENDER"):
+    raise RuntimeError("Render requires DATABASE_URL so app data persists in PostgreSQL.")
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 
 # Password validation
@@ -159,6 +182,15 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+if not DEBUG:
+    STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
 
 
 # Django 6.1 mailer configuration for Gmail password-reset emails.
@@ -201,6 +233,19 @@ SOCIALACCOUNT_PROVIDERS = {
         "SCOPE": ["profile", "email"],
     },
 }
+_google_client_id = os.environ.get("GOOGLE_CLIENT_ID", "").strip()
+_google_client_secret = os.environ.get("GOOGLE_CLIENT_SECRET", "").strip()
+if _google_client_id and _google_client_secret:
+    # On Render the OAuth app is configured as secrets, avoiding a manual
+    # SocialApp database setup. Existing host-specific SocialApp rows continue
+    # to work on deployments that already configure allauth in the database.
+    SOCIALACCOUNT_PROVIDERS["google"]["APPS"] = [
+        {
+            "client_id": _google_client_id,
+            "secret": _google_client_secret,
+            "key": "",
+        }
+    ]
 SOCIALACCOUNT_QUERY_EMAIL = True
 
 # OAuth returns to FuelFix as a top-level HTTPS navigation. Lax cookies allow
@@ -210,6 +255,9 @@ CSRF_COOKIE_SAMESITE = "Lax"
 if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+if RENDER_EXTERNAL_HOSTNAME:
+    # Render terminates HTTPS at its proxy and forwards the original scheme.
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # Razorpay server credentials. Set these in the ignored project-root .env file.
 RAZORPAY_KEY_ID = os.environ.get("RAZORPAY_KEY_ID", "")

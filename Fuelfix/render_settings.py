@@ -118,3 +118,35 @@ LOGGING = {
         },
     },
 }
+
+
+class RenderOAuthCallbackLoggingMiddleware:
+    """Log OAuth callback failures without enabling public Django debug pages."""
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        is_google_callback = request.path == "/accounts/google/login/callback/"
+        try:
+            response = self.get_response(request)
+        except Exception as exc:
+            if is_google_callback:
+                import traceback
+
+                print(
+                    f"FuelFix Google OAuth callback exception: {type(exc).__name__}",
+                    flush=True,
+                )
+                traceback.print_exc()
+            raise
+
+        if is_google_callback and response.status_code >= 500:
+            print(
+                f"FuelFix Google OAuth callback returned HTTP {response.status_code}",
+                flush=True,
+            )
+        return response
+
+if "Fuelfix.render_settings.RenderOAuthCallbackLoggingMiddleware" not in MIDDLEWARE:
+    MIDDLEWARE.insert(0, "Fuelfix.render_settings.RenderOAuthCallbackLoggingMiddleware")

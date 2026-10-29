@@ -207,3 +207,5 @@ textarea {
         min-height: 44px;
     }
 }
+
+@media (max-width: 760px) { #main-content { overflow-x: clip; } }

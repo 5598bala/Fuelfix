@@ -73,11 +73,18 @@
             }
         }
 
-        /* Restrict phone input to digits */
+        /* Accept phone autofill/paste values with the Indian +91 prefix. */
+        function normalizePhone(value) {
+            let digits = String(value || "").replace(/\D/g, "");
+            if (digits.length === 12 && digits.startsWith("91")) {
+                digits = digits.slice(2);
+            }
+            return digits;
+        }
+
+        /* Keep the numeric keypad available on mobile phones. */
         phoneInput.addEventListener("input", () => {
-            phoneInput.value = phoneInput.value
-                .replace(/\D/g, "")
-                .slice(0, 10);
+            phoneInput.value = normalizePhone(phoneInput.value);
 
             phoneInput.setCustomValidity("");
         });
@@ -177,7 +184,7 @@
         sendBtn.addEventListener("click", async () => {
             if (sendBtn.disabled) return;
 
-            const phone = phoneInput.value.replace(/\D/g, "");
+            const phone = normalizePhone(phoneInput.value);
 
             if (!/^\d{10}$/.test(phone)) {
                 showMessage(
@@ -235,7 +242,7 @@
                 return;
             }
 
-            const phone = phoneInput.value.replace(/\D/g, "");
+            const phone = normalizePhone(phoneInput.value);
             const otp = otpInput.value.trim();
 
             if (!/^\d{10}$/.test(phone)) {

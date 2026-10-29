@@ -13,6 +13,30 @@
     let lastSentAt = 0;
     let locationRequestInProgress = false;
     let sharingStarted = false;
+    let screenWakeLock = null;
+
+    async function keepScreenAwake() {
+        if (!navigator.wakeLock || document.hidden || screenWakeLock) return;
+        try {
+            screenWakeLock = await navigator.wakeLock.request("screen");
+            screenWakeLock.addEventListener("release", () => {
+                screenWakeLock = null;
+            }, {once: true});
+        } catch {
+            // GPS sharing continues if the browser does not support wake lock.
+        }
+    }
+
+    async function allowScreenToSleep() {
+        const lock = screenWakeLock;
+        screenWakeLock = null;
+        if (!lock) return;
+        try {
+            await lock.release();
+        } catch {
+            // The browser may already have released the lock.
+        }
+    }
 
     function getCookie(name) {
         const item = document.cookie
@@ -70,6 +94,7 @@
         }
         watchId = null;
         sharingStarted = false;
+        allowScreenToSleep();
         retryButton.textContent = "Retry location sharing";
         retryButton.hidden = false;
     }
@@ -94,6 +119,7 @@
         }
         sharingStarted = true;
         retryButton.hidden = true;
+        keepScreenAwake();
         message.textContent = "Waiting for GPS. Keep this page open while delivering; mobile browsers may pause location in the background.";
         watchId = navigator.geolocation.watchPosition(
             sendPosition,
@@ -108,6 +134,7 @@
         }
         watchId = null;
         sharingStarted = false;
+        allowScreenToSleep();
     }
 
     if (onlineButton) {
@@ -166,4 +193,7 @@
     }
 
     window.addEventListener("pagehide", stopGps);
+    document.addEventListener("visibilitychange", () => {
+        if (!document.hidden && sharingStarted) keepScreenAwake();
+    });
 })();

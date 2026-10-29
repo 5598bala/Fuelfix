@@ -10,7 +10,7 @@ services:
     runtime: python
     plan: free
     buildCommand: bash ./build.sh
-    startCommand: gunicorn Fuelfix.wsgi:application --bind 0.0.0.0:$PORT
+    startCommand: 'python -c "import jwt; print(''PyJWT'', jwt.__version__)" && exec python -m gunicorn Fuelfix.wsgi:application --bind 0.0.0.0:$PORT'
     healthCheckPath: /
     autoDeploy: true
     envVars:

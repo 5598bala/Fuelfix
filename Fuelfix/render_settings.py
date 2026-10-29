@@ -1,6 +1,27 @@
 """Render-specific production settings for FuelFix."""
 
 import os
+from pathlib import Path
+
+# Render mounts uploaded secret files under /etc/secrets. Load only the
+# integration credentials FuelFix needs; explicit environment values win.
+_secret_file = Path("/etc/secrets/fuelfix.env")
+if _secret_file.is_file():
+    _secret_names = {
+        "MERAOTP_API_KEY",
+        "GEOAPIFY_API_KEY",
+        "GOOGLE_CLIENT_ID",
+        "GOOGLE_CLIENT_SECRET",
+    }
+    for _line in _secret_file.read_text(encoding="utf-8").splitlines():
+        _line = _line.strip()
+        if not _line or _line.startswith("#") or "=" not in _line:
+            continue
+        _name, _value = _line.split("=", 1)
+        _name = _name.strip()
+        _value = _value.strip().strip("\"'")
+        if _name in _secret_names and _value:
+            os.environ.setdefault(_name, _value)
 
 _render_host = os.environ.get("RENDER_EXTERNAL_HOSTNAME", "").strip()
 if _render_host:
